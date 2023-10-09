@@ -29,3 +29,4 @@ cmake_install.cmake
 # Misc
 .DS_Store
 Thumbs.db
+.idea
