@@ -19,7 +19,8 @@ void main() {
     gl_Position = mvpMatrix * vec4(vPos, 1.0);
 
     // compute Light vector
-    vec3 lightDirectionReversed = -1 * lightDirection;
+    //vec3 lightDirectionReversed = -1 * lightDirection;
+    vec3 lightDirectionReversed = normalize(-lightDirection);
     vec3 lightVector = normalize(lightDirectionReversed);
 
     // transform normal vector
@@ -29,5 +30,6 @@ void main() {
     float diffuse = max(dot(normalTransformed, lightVector), 0.0);
 
     // assign the color for this vertex
-    color = lightColor * materialColor * diffuse;
+    //color = lightColor * materialColor * diffuse;
+    color = lightColor * materialColor * (max(dot(normalTransformed, lightDirectionReversed), 1.0));
 }
