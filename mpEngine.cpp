@@ -353,12 +353,12 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     glm::mat4 modelMtx(1.0f);
     // we are going to cheat and use our look at point to place our skiff so that it is always in view
 
-    glm::vec3 drawPoint = _pSkiff -> getPlaneDrawPoint();
+    glm::vec3 drawPoint = _pSkiff -> getPosition();
     drawPoint.y += 0.05;
     modelMtx = glm::translate(modelMtx, drawPoint );
 
     // rotate the skiff with our camera phi direction
-    GLfloat skiffRotate = _pSkiff->getSkiffDrawAngle();
+    GLfloat skiffRotate = _pSkiff->getAngle();
     modelMtx = glm::rotate(modelMtx, skiffRotate, CSCI441::Y_AXIS);
     modelMtx = glm::rotate(modelMtx, glm::pi<float>() / 2, CSCI441::X_AXIS );
 
@@ -371,58 +371,58 @@ void mpEngine::_updateScene() {
     // constantly rotate the props
     _pSkiff->rotateProps();
     // make sure skiff is drawn even if arrow keys haven't been pressed
-    _pSkiff->setPlaneDrawPoint(pArcballCam->getLookAtPoint());
+    _pSkiff->setPosition(pArcballCam->getLookAtPoint());
     GLfloat skiffMovementSpeed = 0.1f;
     // turn right
     if( _keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT] ) {
-        GLfloat currAngle = _pSkiff->getSkiffDrawAngle();
+        GLfloat currAngle = _pSkiff->getAngle();
         currAngle -= _cameraSpeed.y;
-        _pSkiff->setSkiffDrawAngle(currAngle);
+        _pSkiff->setAngle(currAngle);
         pArcballCam->rotate(_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
         pOverheadCam->rotate(_cameraSpeed.y, 0.0f);
         pOverheadCam->recomputeOrientation();
-        _pSkiff->setPlaneDrawPoint(pArcballCam->getLookAtPoint());
+        _pSkiff->setPosition(pArcballCam->getLookAtPoint());
     }
     // turn left
     if( _keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT] ) {
-        GLfloat currAngle = _pSkiff->getSkiffDrawAngle();
+        GLfloat currAngle = _pSkiff->getAngle();
         currAngle += _cameraSpeed.y;
-        _pSkiff->setSkiffDrawAngle(currAngle);
+        _pSkiff->setAngle(currAngle);
         pArcballCam->rotate(-_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
         pOverheadCam->rotate(-_cameraSpeed.y, 0.0f);
         pOverheadCam->recomputeOrientation();
-        _pSkiff->setPlaneDrawPoint(pArcballCam->getLookAtPoint());
+        _pSkiff->setPosition(pArcballCam->getLookAtPoint());
     }
     // go forward
     if( _keys[GLFW_KEY_W] || _keys[GLFW_KEY_UP] ) {
-        glm::vec3 currPoint = _pSkiff->getPlaneDrawPoint();
+        glm::vec3 currPoint = _pSkiff->getPosition();
         glm::vec3 projectedPoint = currPoint;
-        projectedPoint.z -= skiffMovementSpeed * cos(_pSkiff->getSkiffDrawAngle());
-        projectedPoint.x -= skiffMovementSpeed * sin(_pSkiff->getSkiffDrawAngle());
+        projectedPoint.z -= skiffMovementSpeed * cos(_pSkiff->getAngle());
+        projectedPoint.x -= skiffMovementSpeed * sin(_pSkiff->getAngle());
         // ensure skiff stays in ground plane
         if (projectedPoint.z > bottomEdge && projectedPoint.z < topEdge && projectedPoint.x < rightEdge && projectedPoint.x > leftEdge) {
             pArcballCam->setLookAtPoint(projectedPoint);
             pArcballCam->recomputeOrientation();
             pOverheadCam->setLookAtPoint(projectedPoint);
             pOverheadCam->recomputeOrientation();
-            _pSkiff->setPlaneDrawPoint(pArcballCam->getLookAtPoint());
+            _pSkiff->setPosition(pArcballCam->getLookAtPoint());
         }
     }
     // go backwards
     if( _keys[GLFW_KEY_S] || _keys[GLFW_KEY_DOWN] ) {
-        glm::vec3 currPoint = _pSkiff->getPlaneDrawPoint();
+        glm::vec3 currPoint = _pSkiff->getPosition();
         glm::vec3 projectedPoint = currPoint;
-        projectedPoint.z += skiffMovementSpeed * cos(_pSkiff->getSkiffDrawAngle());
-        projectedPoint.x += skiffMovementSpeed * sin(_pSkiff->getSkiffDrawAngle());
+        projectedPoint.z += skiffMovementSpeed * cos(_pSkiff->getAngle());
+        projectedPoint.x += skiffMovementSpeed * sin(_pSkiff->getAngle());
         // ensure skiff stays in ground plane
         if (projectedPoint.z > bottomEdge && projectedPoint.z < topEdge && projectedPoint.x < rightEdge && projectedPoint.x > leftEdge) {
             pArcballCam->setLookAtPoint(projectedPoint);
             pArcballCam->recomputeOrientation();
             pOverheadCam->setLookAtPoint(projectedPoint);
             pOverheadCam->recomputeOrientation();
-            _pSkiff->setPlaneDrawPoint(pArcballCam->getLookAtPoint());
+            _pSkiff->setPosition(pArcballCam->getLookAtPoint());
         }
     }
 

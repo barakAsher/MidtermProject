@@ -28,21 +28,21 @@ public:
     /// \desc simulates the skiff moving by rotating the propellers
     void rotateProps();
 
-    /// \desc getter and setter for the angle that the skiff should be drawn at
-    void setSkiffDrawAngle(GLfloat skiffDrawAngle) { this->_skiffDrawAngle = skiffDrawAngle;}
-    GLfloat getSkiffDrawAngle() const {return _skiffDrawAngle;}
-
-    /// \desc getter and setter for the position that the skiff should be drawn at
-    void setPlaneDrawPoint(glm::vec3 skiffDrawPoint) {this->_skiffDrawPoint = skiffDrawPoint;}
-    glm::vec3 getPlaneDrawPoint() {return _skiffDrawPoint;}
+//    /// \desc getter and setter for the angle that the skiff should be drawn at
+//    void setSkiffDrawAngle(GLfloat skiffDrawAngle) { this->_skiffDrawAngle = skiffDrawAngle;}
+//    GLfloat getSkiffDrawAngle() const {return _skiffDrawAngle;}
+//
+//    /// \desc getter and setter for the position that the skiff should be drawn at
+//    void setPlaneDrawPoint(glm::vec3 skiffDrawPoint) {this->_skiffDrawPoint = skiffDrawPoint;}
+//    glm::vec3 getPlaneDrawPoint() {return _skiffDrawPoint;}
 
 
 
 private:
     /// \desc position that the skiff should be drawn at
-    glm::vec3 _skiffDrawPoint;
+//    glm::vec3 _skiffDrawPoint;
     /// \desc angle that the skiff should be drawn at
-    GLfloat _skiffDrawAngle;
+//    GLfloat _skiffDrawAngle;
 
     /// \desc current angle of rotation for the propeller
     GLfloat _propAngle;

@@ -6,6 +6,7 @@
 #include <CSCI441/OpenGLUtils.hpp>
 
 Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation ) {
+
     _propAngle = 0.0f;
     _propAngleRotationSpeed = _PI / 16.0f;
 
