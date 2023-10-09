@@ -147,10 +147,15 @@ void mpEngine::mSetupBuffers() {
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
+
+    players.push_back(_pSkiff);
+
     _pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
                             _lightingShaderUniformLocations.mvpMatrix,
                             _lightingShaderUniformLocations.normalMatrix,
                             _lightingShaderUniformLocations.materialColor);
+
+    players.push_back((_pVehicle));
 
     _createGroundBuffers();
     _generateEnvironment();
