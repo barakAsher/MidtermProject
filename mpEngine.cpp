@@ -33,7 +33,7 @@ mpEngine::mpEngine()
 
 mpEngine::~mpEngine() {
     delete pArcballCam;
-    delete pOverheadCam;
+//    delete pOverheadCam;
 }
 
 void mpEngine::handleKeyEvent(GLint key, GLint action) {
@@ -81,17 +81,17 @@ void mpEngine::handleCursorPositionEvent(glm::vec2 currMousePosition) {
             // don't zoom in too far
             if (radius > 1.0f) {
                 pArcballCam->setRadius(radius);
-                pOverheadCam->setRadius(radius * 5);
+//                pOverheadCam->setRadius(radius * 5);
             }
             pArcballCam->recomputeOrientation();
-            pOverheadCam->recomputeOrientation();
+//            pOverheadCam->recomputeOrientation();
         }
         else {
             // rotate the camera by the distance the mouse moved
             pArcballCam->rotate((currMousePosition.x - _mousePosition.x) * 0.005f,
                                 (_mousePosition.y - currMousePosition.y) * 0.005f );
-            pOverheadCam->rotate((currMousePosition.x - _mousePosition.x) * 0.005f,
-                                (_mousePosition.y - currMousePosition.y) * 0.005f );
+//            pOverheadCam->rotate((currMousePosition.x - _mousePosition.x) * 0.005f,
+//                                (_mousePosition.y - currMousePosition.y) * 0.005f );
         }
     }
 
@@ -276,18 +276,17 @@ void mpEngine::_generateEnvironment() {
 void mpEngine::mSetupScene() {
     // set up arcball cam
     pArcballCam = new ArcballCam();
-    pArcballCam->setPosition(glm::vec3(60.0f, 200.0f, 30.0f) );
     pArcballCam->setTheta(-M_PI / 1.0f );
     pArcballCam->setPhi(M_PI / 1.5f );
+    pArcballCam->setLookAtPoint(_pSkiff->getPosition());
     pArcballCam->recomputeOrientation();
 
-    // set up overhead cam
-    pOverheadCam = new ArcballCam();
-    pOverheadCam->setPosition(glm::vec3(60.0f, 200.0f, 30.0f) );
-    pOverheadCam->setTheta(-M_PI);
-    pOverheadCam->setPhi(M_PI-0.001);
-    pOverheadCam->setRadius(pArcballCam->getRadius() * 3);
-    pOverheadCam->recomputeOrientation();
+//    // set up overhead cam
+//    pOverheadCam = new ArcballCam();
+//    pOverheadCam->setTheta(-M_PI);
+//    pOverheadCam->setPhi(M_PI-0.001);
+//    pOverheadCam->setRadius(pArcballCam->getRadius() * 3);
+//    pOverheadCam->recomputeOrientation();
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
@@ -389,10 +388,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 }
 
 void mpEngine::_updateScene() {
-    // constantly rotate the props
-    _pSkiff->rotateProps();
-    // make sure skiff is drawn even if arrow keys haven't been pressed
-    _pSkiff->setPosition(pArcballCam->getLookAtPoint());
+
     GLfloat skiffMovementSpeed = 0.1f;
     // turn right
     if( _keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT] ) {
@@ -401,8 +397,8 @@ void mpEngine::_updateScene() {
         _pSkiff->setAngle(currAngle);
         pArcballCam->rotate(_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
-        pOverheadCam->rotate(_cameraSpeed.y, 0.0f);
-        pOverheadCam->recomputeOrientation();
+//        pOverheadCam->rotate(_cameraSpeed.y, 0.0f);
+//        pOverheadCam->recomputeOrientation();
         _pSkiff->setPosition(pArcballCam->getLookAtPoint());
     }
     // turn left
@@ -412,8 +408,8 @@ void mpEngine::_updateScene() {
         _pSkiff->setAngle(currAngle);
         pArcballCam->rotate(-_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
-        pOverheadCam->rotate(-_cameraSpeed.y, 0.0f);
-        pOverheadCam->recomputeOrientation();
+//        pOverheadCam->rotate(-_cameraSpeed.y, 0.0f);
+//        pOverheadCam->recomputeOrientation();
         _pSkiff->setPosition(pArcballCam->getLookAtPoint());
     }
     // go forward
@@ -424,11 +420,11 @@ void mpEngine::_updateScene() {
         projectedPoint.x -= skiffMovementSpeed * sin(_pSkiff->getAngle());
         // ensure skiff stays in ground plane
         if (projectedPoint.z > bottomEdge && projectedPoint.z < topEdge && projectedPoint.x < rightEdge && projectedPoint.x > leftEdge) {
-            pArcballCam->setLookAtPoint(projectedPoint);
+            _pSkiff->setPosition(projectedPoint);
+            pArcballCam->setLookAtPoint(_pSkiff->getPosition());
             pArcballCam->recomputeOrientation();
-            pOverheadCam->setLookAtPoint(projectedPoint);
-            pOverheadCam->recomputeOrientation();
-            _pSkiff->setPosition(pArcballCam->getLookAtPoint());
+//            headCam->setLookAtPoint(projectedPoint);
+//            ppOverOverheadCam->recomputeOrientation();
         }
     }
     // go backwards
@@ -439,11 +435,11 @@ void mpEngine::_updateScene() {
         projectedPoint.x += skiffMovementSpeed * sin(_pSkiff->getAngle());
         // ensure skiff stays in ground plane
         if (projectedPoint.z > bottomEdge && projectedPoint.z < topEdge && projectedPoint.x < rightEdge && projectedPoint.x > leftEdge) {
-            pArcballCam->setLookAtPoint(projectedPoint);
+            _pSkiff->setPosition(projectedPoint);
+            pArcballCam->setLookAtPoint(_pSkiff->getPosition());
             pArcballCam->recomputeOrientation();
-            pOverheadCam->setLookAtPoint(projectedPoint);
-            pOverheadCam->recomputeOrientation();
-            _pSkiff->setPosition(pArcballCam->getLookAtPoint());
+//            pOverheadCam->setLookAtPoint(projectedPoint);
+//            pOverheadCam->recomputeOrientation();
         }
     }
 
@@ -468,10 +464,10 @@ void mpEngine::run() {
         // draw everything to the window
         _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
 
-        // overhead camera window
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glViewport(framebufferWidth - 200, framebufferHeight - 200, 200, 200);
-        _renderScene(pOverheadCam->getViewMatrix(), pOverheadCam->getProjectionMatrix());
+//        // overhead camera window
+//        glClear(GL_DEPTH_BUFFER_BIT);
+//        glViewport(framebufferWidth - 200, framebufferHeight - 200, 200, 200);
+//        _renderScene(pOverheadCam->getViewMatrix(), pOverheadCam->getProjectionMatrix());
 
         _updateScene();
 
