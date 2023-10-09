@@ -378,9 +378,12 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
     glm::vec3 translationVector = _pSkiff->getPosition() + glm::vec3(-2.0f, 0.0f, 3.0f);
     modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
-    modelMtx = glm::scale(modelMtx, {6,6,6});
+    modelMtx = glm::scale(modelMtx, {3,3,3});
     _pVehicle->drawPlane(modelMtx, viewMtx, projMtx);
 
+    translationVector = _pSkiff->getPosition() + glm::vec3(0.0f, 0.0f, 3.0f);
+    modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
+    modelMtx = glm::scale(modelMtx, {0.3,0.3,0.3});
     _pStarlord->drawStarlord(modelMtx, viewMtx, projMtx);
 
 
