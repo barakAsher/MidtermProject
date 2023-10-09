@@ -13,7 +13,7 @@
 #define M_PI 3.14159265f
 #endif
 
-Starlord::Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint materialColorUniformLocation){
+Starlord::Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation) {
 
     _shaderProgramHandle                            = shaderProgramHandle;
     _shaderProgramUniformLocations.mvpMtx           = mvpMtxUniformLocation;
