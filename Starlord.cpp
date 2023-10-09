@@ -58,7 +58,7 @@ void Starlord::walkBackward(){
     if(legAngle < 0) legAngle = 360;
 }
 
-void Starlord::drawStarlord( glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ){
+void Starlord::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ){
     _drawBody(modelMtx, viewMtx, projMtx);
     _drawLeg(false,modelMtx, viewMtx, projMtx);
     _drawLeg(true,modelMtx, viewMtx, projMtx);

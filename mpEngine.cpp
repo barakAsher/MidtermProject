@@ -162,12 +162,14 @@ void mpEngine::mSetupBuffers() {
 
 
     players.push_back((_pVehicle));
-//
-//    _pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
-//                        _lightingShaderUniformLocations.mvpMatrix,
-//                        _lightingShaderUniformLocations.normalMatrix,
-//                        _lightingShaderUniformLocations.materialColor);
-//    players.push_back(_pStarlord);
+
+    _pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+                        _lightingShaderUniformLocations.mvpMatrix,
+                        _lightingShaderUniformLocations.normalMatrix,
+                        _lightingShaderUniformLocations.materialColor);
+    players.push_back(_pStarlord);
+
+    // TODO add gengiben
 
     _createGroundBuffers();
     _generateEnvironment();
@@ -394,7 +396,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 //    translationVector = _pSkiff->getPosition() + glm::vec3(0.0f, 0.0f, 3.0f);
 //    modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
 //    modelMtx = glm::scale(modelMtx, {0.3,0.3,0.3});
-//    _pStarlord->drawStarlord(modelMtx, viewMtx, projMtx);
+//    _pStarlord->drawPlayer(modelMtx, viewMtx, projMtx);
 
 
     //// END DRAWING THE SKIFF ////
