@@ -1,13 +1,17 @@
 #ifndef LAB05_LAB05_ENGINE_H
 #define LAB05_LAB05_ENGINE_H
 
+#include <vector>
+
 #include <CSCI441/OpenGLEngine.hpp>
 #include <CSCI441/ShaderProgram.hpp>
 
 #include "Skiff.h"
 #include "ArcballCam.hpp"
 #include "Vehicle.h"
+#include "Player.h"
 #include "Starlord.h"
+
 
 #include <vector>
 
@@ -44,6 +48,10 @@ public:
     GLfloat getLeftEdge() const {return leftEdge;}
     GLfloat getTopEdge() const {return topEdge;}
     GLfloat getBottomEdge() const {return bottomEdge;}
+
+    // TODO prob should be private
+    std::vector<Player*> players;
+    Player* currentPlayer;
 
 private:
     void mSetupGLFW() final;
