@@ -26,11 +26,7 @@ Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint norm
 
 }
 
-void Skiff::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
-    drawLavaSkiff(modelMtx, viewMtx, projMtx);
-}
-
-void Skiff::drawLavaSkiff(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
+void Skiff::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
     glm::vec3 drawPoint = this->getPosition();
     drawPoint.y += 0.05;
     modelMtx = glm::translate(modelMtx, drawPoint );

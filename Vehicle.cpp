@@ -41,7 +41,7 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint 
     _colorTail = glm::vec3( 1.0f, 1.0f, 0.0f );
 }
 
-void Vehicle::drawPlane(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
+void Vehicle::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
 
     //Ensure that the the plane is drawn correctly after it has been rotated
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), _rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));

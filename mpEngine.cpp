@@ -156,13 +156,13 @@ void mpEngine::mSetupBuffers() {
 
     players.push_back(_pSkiff);
 
-//    _pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
-//                            _lightingShaderUniformLocations.mvpMatrix,
-//                            _lightingShaderUniformLocations.normalMatrix,
-//                            _lightingShaderUniformLocations.materialColor);
-//
-//
-//    players.push_back((_pVehicle));
+    _pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
+                            _lightingShaderUniformLocations.mvpMatrix,
+                            _lightingShaderUniformLocations.normalMatrix,
+                            _lightingShaderUniformLocations.materialColor);
+
+
+    players.push_back((_pVehicle));
 //
 //    _pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
 //                        _lightingShaderUniformLocations.mvpMatrix,
@@ -378,7 +378,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     glm::mat4 modelMtx(1.0f);
     // we are going to cheat and use our look at point to place our skiff so that it is always in view
 
-    // draw our skiff now
+    // draw our players
     for(int i; i < players.size(); i++) {
         players[i]->drawPlayer(modelMtx, viewMtx, projMtx);
     }
@@ -387,7 +387,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 //    glm::vec3 translationVector = _pSkiff->getPosition() + glm::vec3(-2.0f, 0.0f, 3.0f);
 //    modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
 //    modelMtx = glm::scale(modelMtx, {3,3,3});
-//    _pVehicle->drawPlane(modelMtx, viewMtx, projMtx);
+//    _pVehicle->drawPlayer(modelMtx, viewMtx, projMtx);
 //
 //    translationVector = _pSkiff->getPosition() + glm::vec3(0.0f, 0.0f, 3.0f);
 //    modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
