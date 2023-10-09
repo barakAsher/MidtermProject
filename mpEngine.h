@@ -6,6 +6,7 @@
 
 #include "Skiff.h"
 #include "ArcballCam.hpp"
+#include "Vehicle.h"
 
 #include <vector>
 
@@ -83,6 +84,7 @@ private:
 
     /// \desc our skiff model
     Skiff* _pSkiff;
+    Vehicle* _pVehicle;
 
     /// \desc edges of our ground plane
     GLfloat leftEdge;
