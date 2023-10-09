@@ -52,7 +52,6 @@ void mpEngine::handleKeyEvent(GLint key, GLint action) {
                 currentPlayerIdx++;
                 if (currentPlayerIdx > players.size() - 1)
                     currentPlayerIdx = 0;
-                pArcballCam->setLookAtPoint(currentPlayer->getPosition());
 
             default: break; // suppress CLion warning
         }
@@ -350,6 +349,9 @@ void mpEngine::mCleanupBuffers() {
 // Rendering / Drawing Functions - this is where the magic happens!
 
 void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
+    pArcballCam->setLookAtPoint(currentPlayer->getPosition());
+    pArcballCam->recomputeOrientation();
+
     // use our lighting shader program
     _lightingShaderProgram->useProgram();
 
