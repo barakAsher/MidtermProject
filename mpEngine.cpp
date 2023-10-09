@@ -155,14 +155,14 @@ void mpEngine::mSetupBuffers() {
                             _lightingShaderUniformLocations.normalMatrix,
                             _lightingShaderUniformLocations.materialColor);
 
-<<<<<<< HEAD
+
     players.push_back((_pVehicle));
-=======
+
     _pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
->>>>>>> 954fcb102b0195b11b91f83f70e36e9c8456d9d4
+    players.push_back(_pStarlord);
 
     _createGroundBuffers();
     _generateEnvironment();
