@@ -1,3 +1,0 @@
-/home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles/mp.dir
-/home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
