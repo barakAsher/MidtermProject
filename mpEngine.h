@@ -10,6 +10,8 @@
 #include "ArcballCam.hpp"
 #include "Vehicle.h"
 #include "Player.h"
+#include "Starlord.h"
+
 
 #include <vector>
 
@@ -92,6 +94,7 @@ private:
     /// \desc our skiff model
     Skiff* _pSkiff;
     Vehicle* _pVehicle;
+    Starlord* _pStarlord;
 
     /// \desc edges of our ground plane
     GLfloat leftEdge;

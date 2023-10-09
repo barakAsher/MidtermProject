@@ -155,7 +155,14 @@ void mpEngine::mSetupBuffers() {
                             _lightingShaderUniformLocations.normalMatrix,
                             _lightingShaderUniformLocations.materialColor);
 
+<<<<<<< HEAD
     players.push_back((_pVehicle));
+=======
+    _pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+                        _lightingShaderUniformLocations.mvpMatrix,
+                        _lightingShaderUniformLocations.normalMatrix,
+                        _lightingShaderUniformLocations.materialColor);
+>>>>>>> 954fcb102b0195b11b91f83f70e36e9c8456d9d4
 
     _createGroundBuffers();
     _generateEnvironment();
@@ -328,6 +335,7 @@ void mpEngine::mCleanupBuffers() {
     fprintf( stdout, "[INFO]: ...deleting models..\n" );
     delete _pSkiff;
     delete _pVehicle;
+    delete _pStarlord;
 }
 
 //*************************************************************************************
@@ -379,6 +387,10 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
     modelMtx = glm::scale(modelMtx, {6,6,6});
     _pVehicle->drawPlane(modelMtx, viewMtx, projMtx);
+
+    _pStarlord->drawStarlord(modelMtx, viewMtx, projMtx);
+
+
     //// END DRAWING THE SKIFF ////
 }
 

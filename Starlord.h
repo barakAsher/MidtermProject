@@ -9,12 +9,13 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include "Player.h"
 
 
-class Starlord {
+class Starlord : public Player {
 public:
-    Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint materialColorUniformLocation);
-
+    //Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint materialColorUniformLocation);
+    Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation );
     void drawStarlord( glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
     /// \desc simulates the plane flying forward by rotating the propeller clockwise
     void walkForward();
