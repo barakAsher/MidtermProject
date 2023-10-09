@@ -10,7 +10,7 @@
 class Player {
 public:
     // constructor
-    Player( glm::vec3 position);
+    Player( glm::vec3 position) {this->_position=position;}
 
     // getters and setters
     glm::vec3 getPosition() {return  _position;}
