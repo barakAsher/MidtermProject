@@ -148,28 +148,32 @@ void mpEngine::mSetupBuffers() {
     CSCI441::setVertexAttributeLocations( _lightingShaderAttributeLocations.vPos,_lightingShaderAttributeLocations.vNormal);
 
     // give the skiff the normal matrix location
-    _pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
+    Player* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
 
-    players.push_back(_pSkiff);
+    players.push_back(pSkiff);
 
-    _pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
+    Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
                             _lightingShaderUniformLocations.mvpMatrix,
                             _lightingShaderUniformLocations.normalMatrix,
                             _lightingShaderUniformLocations.materialColor);
 
 
-    players.push_back((_pVehicle));
+    players.push_back((pVehicle));
 
-    _pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+    Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
-    players.push_back(_pStarlord);
+    players.push_back(pStarlord);
 
-    // TODO add gengiben
+    Player* pGengiben = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+                                      _lightingShaderUniformLocations.mvpMatrix,
+                                      _lightingShaderUniformLocations.normalMatrix,
+                                      _lightingShaderUniformLocations.materialColor);
+    players.push_back(pGengiben);
 
     _createGroundBuffers();
     _generateEnvironment();
@@ -340,10 +344,10 @@ void mpEngine::mCleanupBuffers() {
     fprintf( stdout, "[INFO]: ...deleting VBOs....\n" );
     CSCI441::deleteObjectVBOs();
 
-    fprintf( stdout, "[INFO]: ...deleting models..\n" );
-    delete _pSkiff;
-    delete _pVehicle;
-    delete _pStarlord;
+//    fprintf( stdout, "[INFO]: ...deleting models..\n" );
+//    delete _pSkiff;
+//    delete _pVehicle;
+//    delete _pStarlord;
 }
 
 //*************************************************************************************

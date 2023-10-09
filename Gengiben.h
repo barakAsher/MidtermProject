@@ -21,7 +21,7 @@ public:
     /// \param projMtx camera projection matrix to apply to plane
     /// \note internally uses the provided shader program and sets the necessary uniforms
     /// for the MVP and Normal Matrices as well as the material diffuse color
-    void drawGengiben(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
+    void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
 
 
     /// \desc simulates the plane flying forward by rotating the propeller clockwise

@@ -20,7 +20,7 @@ Gengiben::Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLin
 
 }
 
-void Gengiben::drawGengiben(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
+void Gengiben::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
     modelMtx = glm::rotate( modelMtx, _rotatePlaneAngle, CSCI441::Y_AXIS );
     modelMtx = glm::rotate( modelMtx, mWobbleAmount, CSCI441::X_AXIS );
     mDrawBody(modelMtx, viewMtx, projMtx);

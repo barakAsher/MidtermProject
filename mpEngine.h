@@ -92,10 +92,10 @@ private:
     /// \brief x = forward/backward delta, y = rotational delta
     glm::vec2 _cameraSpeed;
 
-    /// \desc our skiff model
-    Skiff* _pSkiff;
-    Vehicle* _pVehicle;
-    Starlord* _pStarlord;
+//    /// \desc our skiff model
+//    Skiff* _pSkiff;
+//    Vehicle* _pVehicle;
+//    Starlord* _pStarlord;
 
     /// \desc edges of our ground plane
     GLfloat leftEdge;
