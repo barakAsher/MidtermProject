@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/a3.dir/main.cpp.o CMakeFiles/a3.dir/a3Engine.cpp.o CMakeFiles/a3.dir/Skiff.cpp.o -o a3   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -lGL -lglfw -lGLEW 
