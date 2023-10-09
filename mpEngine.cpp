@@ -152,42 +152,65 @@ void mpEngine::mSetupBuffers() {
 }
 
 void mpEngine::_createGroundBuffers() {
-    // set up vertex struct
+    const GLfloat GRID_WIDTH = WORLD_SIZE * 1.8f;
+    const GLfloat GRID_LENGTH = WORLD_SIZE * 1.8f;
+    const GLfloat GRID_SPACING_WIDTH = 1.0f;
+    const GLfloat GRID_SPACING_LENGTH = 1.0f;
+    // precomputed parameters based on above
+    const GLfloat LEFT_END_POINT = -GRID_WIDTH / 2.0f - 5.0f;
+    const GLfloat RIGHT_END_POINT = GRID_WIDTH / 2.0f + 5.0f;
+    const GLfloat BOTTOM_END_POINT = -GRID_LENGTH / 2.0f - 5.0f;
+    const GLfloat TOP_END_POINT = GRID_LENGTH / 2.0f + 5.0f;
+
     struct Vertex {
         GLfloat x, y, z;
-        GLfloat xNormal, yNormal, zNormal;
+        GLfloat xN, yN, zN;
 
     };
+    std::vector<Vertex> vertices;
+    std::vector<GLushort> indices;
+    // draw horizontal lines
+    GLushort currentIndex = 0;
+    for(GLfloat i = LEFT_END_POINT; i <= RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
+        Vertex bottomVert = {i, 0.0f, BOTTOM_END_POINT,0,1,0};
+        Vertex topVert = {i, 0.0f, TOP_END_POINT ,0,1,0};
+        vertices.emplace_back(bottomVert);
+        vertices.emplace_back(topVert);
+        indices.emplace_back(currentIndex);
+        indices.emplace_back(currentIndex + 1);
+        currentIndex += 2;
+    }
+    // draw vertical lines
+    for(GLfloat j = BOTTOM_END_POINT; j <= TOP_END_POINT; j += GRID_SPACING_LENGTH) {
+        Vertex leftVert = {LEFT_END_POINT, 0.0f, j ,0,1,0};
+        Vertex rightVert = {RIGHT_END_POINT, 0.0f, j,0,1,0 };
+        vertices.emplace_back(leftVert);
+        vertices.emplace_back(rightVert);
+        indices.emplace_back(currentIndex);
+        indices.emplace_back(currentIndex + 1);
+        currentIndex += 2;
+    }
 
-    // add normal data
-    Vertex groundQuad[4] = {
-            {-1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f},
-            { 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f},
-            {-1.0f, 0.0f,  1.0f, 0.0f, 1.0f, 0.0f},
-            { 1.0f, 0.0f,  1.0f, 0.0f, 1.0f, 0.0f}
-    };
 
-    GLushort indices[4] = {0,1,2,3};
-
-    _numGroundPoints = 4;
-
+    _numGroundPoints = vertices.size();
+    //buffer all of the data for the grid to the gpu
     glGenVertexArrays(1, &_groundVAO);
     glBindVertexArray(_groundVAO);
 
     GLuint vbods[2];       // 0 - VBO, 1 - IBO
     glGenBuffers(2, vbods);
     glBindBuffer(GL_ARRAY_BUFFER, vbods[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(groundQuad), groundQuad, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(_lightingShaderAttributeLocations.vPos);
     glVertexAttribPointer(_lightingShaderAttributeLocations.vPos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)nullptr);
 
-    // hook up vertex normal attribute
+
     glEnableVertexAttribArray(_lightingShaderAttributeLocations.vNormal);
-    glVertexAttribPointer(_lightingShaderAttributeLocations.vNormal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(_lightingShaderAttributeLocations.vNormal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3*sizeof(float)));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbods[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(GLushort), &indices[0], GL_STATIC_DRAW);
 }
 
 void mpEngine::_generateEnvironment() {
@@ -306,14 +329,14 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     _lightingShaderProgram->useProgram();
 
     //// BEGIN DRAWING THE GROUND PLANE ////
-    glm::mat4 groundModelMtx = glm::scale( glm::mat4(1.0f), glm::vec3(WORLD_SIZE, 1.0f, WORLD_SIZE));
+    glm::mat4 groundModelMtx = glm::mat4(1);
     _computeAndSendMatrixUniforms(groundModelMtx, viewMtx, projMtx);
 
-    glm::vec3 groundColor(0.9f, 0.4f, 0.1f);
+    glm::vec3 groundColor(1.0f,1.0f,1.0f);
     _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, groundColor);
 
     glBindVertexArray(_groundVAO);
-    glDrawElements(GL_TRIANGLE_STRIP, _numGroundPoints, GL_UNSIGNED_SHORT, (void*)0);
+    glDrawElements(GL_LINES, _numGroundPoints, GL_UNSIGNED_SHORT, (void*)0);
     //// END DRAWING THE GROUND PLANE ////
 
     //// BEGIN DRAWING THE BUILDINGS ////
