@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/eddie/csci441-midterm/src/cmake-build-debug
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/a3.dir/all
+all: CMakeFiles/mp.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/a3.dir/clean
+clean: CMakeFiles/mp.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/a3.dir
+# Target rules for target CMakeFiles/mp.dir
 
 # All Build rule for target.
-CMakeFiles/a3.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target a3"
-.PHONY : CMakeFiles/a3.dir/all
+CMakeFiles/mp.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target mp"
+.PHONY : CMakeFiles/mp.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/a3.dir/rule: cmake_check_build_system
+CMakeFiles/mp.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles 4
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/a3.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/mp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/eddie/csci441-midterm/src/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/a3.dir/rule
+.PHONY : CMakeFiles/mp.dir/rule
 
 # Convenience name for target.
-a3: CMakeFiles/a3.dir/rule
-.PHONY : a3
+mp: CMakeFiles/mp.dir/rule
+.PHONY : mp
 
 # clean rule for target.
-CMakeFiles/a3.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/clean
-.PHONY : CMakeFiles/a3.dir/clean
+CMakeFiles/mp.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/clean
+.PHONY : CMakeFiles/mp.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

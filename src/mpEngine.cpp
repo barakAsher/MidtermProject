@@ -1,4 +1,4 @@
-#include "a3Engine.h"
+#include "mpEngine.h"
 
 #include <CSCI441/objects.hpp>
 
@@ -20,10 +20,10 @@ GLfloat getRand() {
 //
 // Public Interface
 
-a3Engine::a3Engine()
+mpEngine::mpEngine()
          : CSCI441::OpenGLEngine(4, 1,
                                  640, 480,
-                                 "A3: The Cabin in the Woods") {
+                                 "MP: The Fellowship") {
 
     for(auto& _key : _keys) _key = GL_FALSE;
 
@@ -31,12 +31,12 @@ a3Engine::a3Engine()
     _leftMouseButtonState = GLFW_RELEASE;
 }
 
-a3Engine::~a3Engine() {
+mpEngine::~mpEngine() {
     delete pArcballCam;
     delete pOverheadCam;
 }
 
-void a3Engine::handleKeyEvent(GLint key, GLint action) {
+void mpEngine::handleKeyEvent(GLint key, GLint action) {
     if(key != GLFW_KEY_UNKNOWN)
         _keys[key] = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 
@@ -53,7 +53,7 @@ void a3Engine::handleKeyEvent(GLint key, GLint action) {
     }
 }
 
-void a3Engine::handleMouseButtonEvent(GLint button, GLint action) {
+void mpEngine::handleMouseButtonEvent(GLint button, GLint action) {
     // if the event is for the left mouse button
     if( button == GLFW_MOUSE_BUTTON_LEFT ) {
         // update the left mouse button's state
@@ -61,7 +61,7 @@ void a3Engine::handleMouseButtonEvent(GLint button, GLint action) {
     }
 }
 
-void a3Engine::handleCursorPositionEvent(glm::vec2 currMousePosition) {
+void mpEngine::handleCursorPositionEvent(glm::vec2 currMousePosition) {
     // if mouse hasn't moved in the window, prevent camera from flipping out
     if(_mousePosition.x == MOUSE_UNINITIALIZED) {
         _mousePosition = currMousePosition;
@@ -103,16 +103,16 @@ void a3Engine::handleCursorPositionEvent(glm::vec2 currMousePosition) {
 //
 // Engine Setup
 
-void a3Engine::mSetupGLFW() {
+void mpEngine::mSetupGLFW() {
     CSCI441::OpenGLEngine::mSetupGLFW();
 
     // set our callbacks
-    glfwSetKeyCallback(mpWindow, a3_engine_keyboard_callback);
-    glfwSetMouseButtonCallback(mpWindow, a3_engine_mouse_button_callback);
-    glfwSetCursorPosCallback(mpWindow, a3_engine_cursor_callback);
+    glfwSetKeyCallback(mpWindow, mp_engine_keyboard_callback);
+    glfwSetMouseButtonCallback(mpWindow, mp_engine_mouse_button_callback);
+    glfwSetCursorPosCallback(mpWindow, mp_engine_cursor_callback);
 }
 
-void a3Engine::mSetupOpenGL() {
+void mpEngine::mSetupOpenGL() {
     glEnable( GL_DEPTH_TEST );					                        // enable depth testing
     glDepthFunc( GL_LESS );							                // use less than depth test
 
@@ -122,8 +122,8 @@ void a3Engine::mSetupOpenGL() {
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	        // clear the frame buffer to black
 }
 
-void a3Engine::mSetupShaders() {
-    _lightingShaderProgram = new CSCI441::ShaderProgram("shaders/a3.v.glsl", "shaders/a3.f.glsl" );
+void mpEngine::mSetupShaders() {
+    _lightingShaderProgram = new CSCI441::ShaderProgram("shaders/mp.v.glsl", "shaders/mp.f.glsl" );
 
     // assign uniforms
     _lightingShaderUniformLocations.mvpMatrix      = _lightingShaderProgram->getUniformLocation("mvpMatrix");
@@ -138,7 +138,7 @@ void a3Engine::mSetupShaders() {
 
 }
 
-void a3Engine::mSetupBuffers() {
+void mpEngine::mSetupBuffers() {
     //  connect our 3D Object Library to our shader
     CSCI441::setVertexAttributeLocations( _lightingShaderAttributeLocations.vPos,_lightingShaderAttributeLocations.vNormal);
 
@@ -151,7 +151,7 @@ void a3Engine::mSetupBuffers() {
     _generateEnvironment();
 }
 
-void a3Engine::_createGroundBuffers() {
+void mpEngine::_createGroundBuffers() {
     // set up vertex struct
     struct Vertex {
         GLfloat x, y, z;
@@ -190,7 +190,7 @@ void a3Engine::_createGroundBuffers() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-void a3Engine::_generateEnvironment() {
+void mpEngine::_generateEnvironment() {
     //******************************************************************
     // parameters to make up our grid size and spacing, feel free to
     // play around with this
@@ -240,7 +240,7 @@ void a3Engine::_generateEnvironment() {
     }
 }
 
-void a3Engine::mSetupScene() {
+void mpEngine::mSetupScene() {
     // set up arcball cam
     pArcballCam = new ArcballCam();
     pArcballCam->setPosition(glm::vec3(60.0f, 200.0f, 30.0f) );
@@ -280,12 +280,12 @@ void a3Engine::mSetupScene() {
 //
 // Engine Cleanup
 
-void a3Engine::mCleanupShaders() {
+void mpEngine::mCleanupShaders() {
     fprintf( stdout, "[INFO]: ...deleting Shaders.\n" );
     delete _lightingShaderProgram;
 }
 
-void a3Engine::mCleanupBuffers() {
+void mpEngine::mCleanupBuffers() {
     fprintf( stdout, "[INFO]: ...deleting VAOs....\n" );
     CSCI441::deleteObjectVAOs();
     glDeleteVertexArrays( 1, &_groundVAO );
@@ -301,7 +301,7 @@ void a3Engine::mCleanupBuffers() {
 //
 // Rendering / Drawing Functions - this is where the magic happens!
 
-void a3Engine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
+void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     // use our lighting shader program
     _lightingShaderProgram->useProgram();
 
@@ -344,7 +344,7 @@ void a3Engine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     //// END DRAWING THE SKIFF ////
 }
 
-void a3Engine::_updateScene() {
+void mpEngine::_updateScene() {
     // constantly rotate the props
     _pSkiff->rotateProps();
     // make sure skiff is drawn even if arrow keys haven't been pressed
@@ -405,7 +405,7 @@ void a3Engine::_updateScene() {
 
 }
 
-void a3Engine::run() {
+void mpEngine::run() {
     //  This is our draw loop - all rendering is done here.  We use a loop to keep the window open
     //	until the user decides to close the window and quit the program.  Without a loop, the
     //	window will display once and then the program exits.
@@ -440,7 +440,7 @@ void a3Engine::run() {
 //
 // Private Helper FUnctions
 
-void a3Engine::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
+void mpEngine::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
     // precompute the Model-View-Projection matrix on the CPU
     glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
     // then send it to the shader on the GPU to apply to every vertex
@@ -455,22 +455,22 @@ void a3Engine::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewM
 //
 // Callbacks
 
-void a3_engine_keyboard_callback(GLFWwindow *window, int key, int scancode, int action, int mods ) {
-    auto engine = (a3Engine*) glfwGetWindowUserPointer(window);
+void mp_engine_keyboard_callback(GLFWwindow *window, int key, int scancode, int action, int mods ) {
+    auto engine = (mpEngine*) glfwGetWindowUserPointer(window);
 
     // pass the key and action through to the engine
     engine->handleKeyEvent(key, action);
 }
 
-void a3_engine_cursor_callback(GLFWwindow *window, double x, double y ) {
-    auto engine = (a3Engine*) glfwGetWindowUserPointer(window);
+void mp_engine_cursor_callback(GLFWwindow *window, double x, double y ) {
+    auto engine = (mpEngine*) glfwGetWindowUserPointer(window);
 
     // pass the cursor position through to the engine
     engine->handleCursorPositionEvent(glm::vec2(x, y));
 }
 
-void a3_engine_mouse_button_callback(GLFWwindow *window, int button, int action, int mods ) {
-    auto engine = (a3Engine*) glfwGetWindowUserPointer(window);
+void mp_engine_mouse_button_callback(GLFWwindow *window, int button, int action, int mods ) {
+    auto engine = (mpEngine*) glfwGetWindowUserPointer(window);
 
     // pass the mouse button and action through to the engine
     engine->handleMouseButtonEvent(button, action);

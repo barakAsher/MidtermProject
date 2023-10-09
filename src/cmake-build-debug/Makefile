@@ -117,24 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named a3
+# Target rules for targets named mp
 
 # Build rule for target.
-a3: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 a3
-.PHONY : a3
+mp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mp
+.PHONY : mp
 
 # fast build rule for target.
-a3/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/build
-.PHONY : a3/fast
+mp/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/build
+.PHONY : mp/fast
 
 Skiff.o: Skiff.cpp.o
 .PHONY : Skiff.o
 
 # target to build an object file
 Skiff.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/Skiff.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/Skiff.cpp.o
 .PHONY : Skiff.cpp.o
 
 Skiff.i: Skiff.cpp.i
@@ -142,7 +142,7 @@ Skiff.i: Skiff.cpp.i
 
 # target to preprocess a source file
 Skiff.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/Skiff.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/Skiff.cpp.i
 .PHONY : Skiff.cpp.i
 
 Skiff.s: Skiff.cpp.s
@@ -150,39 +150,15 @@ Skiff.s: Skiff.cpp.s
 
 # target to generate assembly for a file
 Skiff.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/Skiff.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/Skiff.cpp.s
 .PHONY : Skiff.cpp.s
-
-a3Engine.o: a3Engine.cpp.o
-.PHONY : a3Engine.o
-
-# target to build an object file
-a3Engine.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/a3Engine.cpp.o
-.PHONY : a3Engine.cpp.o
-
-a3Engine.i: a3Engine.cpp.i
-.PHONY : a3Engine.i
-
-# target to preprocess a source file
-a3Engine.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/a3Engine.cpp.i
-.PHONY : a3Engine.cpp.i
-
-a3Engine.s: a3Engine.cpp.s
-.PHONY : a3Engine.s
-
-# target to generate assembly for a file
-a3Engine.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/a3Engine.cpp.s
-.PHONY : a3Engine.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -190,7 +166,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -198,8 +174,32 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/a3.dir/build.make CMakeFiles/a3.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+mpEngine.o: mpEngine.cpp.o
+.PHONY : mpEngine.o
+
+# target to build an object file
+mpEngine.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/mpEngine.cpp.o
+.PHONY : mpEngine.cpp.o
+
+mpEngine.i: mpEngine.cpp.i
+.PHONY : mpEngine.i
+
+# target to preprocess a source file
+mpEngine.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/mpEngine.cpp.i
+.PHONY : mpEngine.cpp.i
+
+mpEngine.s: mpEngine.cpp.s
+.PHONY : mpEngine.s
+
+# target to generate assembly for a file
+mpEngine.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp.dir/build.make CMakeFiles/mp.dir/mpEngine.cpp.s
+.PHONY : mpEngine.cpp.s
 
 # Help Target
 help:
@@ -209,16 +209,16 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... a3"
+	@echo "... mp"
 	@echo "... Skiff.o"
 	@echo "... Skiff.i"
 	@echo "... Skiff.s"
-	@echo "... a3Engine.o"
-	@echo "... a3Engine.i"
-	@echo "... a3Engine.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... mpEngine.o"
+	@echo "... mpEngine.i"
+	@echo "... mpEngine.s"
 .PHONY : help
 
 
