@@ -5,8 +5,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include "Player.h"
 
-class Vehicle {
+//class Vehicle {
+class Vehicle : public Player {
 public:
     /// \desc creates a simple plane that gives the appearance of flight
     /// \param shaderProgramHandle shader program handle that the plane should be drawn using
