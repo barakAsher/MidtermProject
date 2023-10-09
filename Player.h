@@ -17,7 +17,7 @@ public:
     void setAngle(GLfloat angle) {this->_angle = angle;}
 
     // movement functions
-//    virtual void moveForward();
+    virtual void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) = 0;
 //    virtual void moveBackward();
 private:
     glm::vec3 _position;

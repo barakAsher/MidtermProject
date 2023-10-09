@@ -26,7 +26,20 @@ Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint norm
 
 }
 
+void Skiff::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
+    drawLavaSkiff(modelMtx, viewMtx, projMtx);
+}
+
 void Skiff::drawLavaSkiff(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
+    glm::vec3 drawPoint = this->getPosition();
+    drawPoint.y += 0.05;
+    modelMtx = glm::translate(modelMtx, drawPoint );
+
+    // rotate the skiff with our camera phi direction
+    GLfloat skiffRotate = this->getAngle();
+    modelMtx = glm::rotate(modelMtx, skiffRotate, CSCI441::Y_AXIS);
+    modelMtx = glm::rotate(modelMtx, glm::pi<float>() / 2, CSCI441::X_AXIS );
+
     modelMtx = glm::rotate( modelMtx, -_rotatePlaneAngle, CSCI441::Y_AXIS );
     modelMtx = glm::rotate( modelMtx, _rotatePlaneAngle, CSCI441::Z_AXIS );
     _drawSkiffBody(modelMtx, viewMtx, projMtx);        // the body of our skiff

@@ -51,6 +51,7 @@ public:
 
     // TODO prob should be private
     std::vector<Player*> players;
+    GLint currentPlayerIdx = 0;
     Player* currentPlayer;
 
 private:

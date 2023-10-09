@@ -25,6 +25,7 @@ public:
     /// for the MVP and Normal Matrices as well as the material diffuse color
     void drawLavaSkiff(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
 
+    void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ); //TODO add documentation
     /// \desc simulates the skiff moving by rotating the propellers
     void rotateProps();
 
