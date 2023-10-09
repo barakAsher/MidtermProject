@@ -32,6 +32,7 @@ void Skiff::drawLavaSkiff(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projM
     _drawSkiffBody(modelMtx, viewMtx, projMtx);        // the body of our skiff
     _drawSkiffPropeller(true, modelMtx, viewMtx, projMtx);   // left propeller
     _drawSkiffPropeller(false, modelMtx, viewMtx, projMtx);   // right propeller
+    rotateProps();
 }
 
 void Skiff::rotateProps() {
