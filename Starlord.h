@@ -17,21 +17,9 @@ public:
     //Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint materialColorUniformLocation);
     Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation );
     void drawPlayer( glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
-    /// \desc simulates the plane flying forward by rotating the propeller clockwise
-    void walkForward();
-    /// \desc simulates the plane flying backward by rotating the propeller counter-clockwise
-    void walkBackward();
-
 
 
 private:
-    GLuint _shaderProgramHandle;
-    struct ShaderProgramUniformLocations {
-        /// \desc location of the precomputed ModelViewProjection matrix
-        GLint mvpMtx;
-        /// \desc location of the material diffuse color
-        GLint materialColor;
-    } _shaderProgramUniformLocations;
 
     /// \desc color the plane's body
     glm::vec3 _colorBody;
@@ -66,8 +54,6 @@ private:
     void _drawArm(bool lefArm, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const;
     void _drawHead(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const;
     void _drawEye(bool leftEye, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const;
-
-    void _computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const;
 
 };
 

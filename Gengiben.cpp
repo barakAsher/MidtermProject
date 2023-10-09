@@ -6,9 +6,7 @@
 #include <CSCI441/OpenGLUtils.hpp>
 
 Gengiben::Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation ) {
-    mPos = {53,2,50};
-    mRot = 0;
-    mMovementFactor = 0.1;
+
     mWobbleAmount = 0.0f;
 
     _shaderProgramHandle                            = shaderProgramHandle;
@@ -16,12 +14,10 @@ Gengiben::Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLin
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor        = materialColorUniformLocation;
 
-    _rotatePlaneAngle = _PI / 2.0f;
-
 }
 
-void Gengiben::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
-    modelMtx = glm::rotate( modelMtx, _rotatePlaneAngle, CSCI441::Y_AXIS );
+void Gengiben::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ){
+    modelMtx = glm::rotate( modelMtx, getAngle(), CSCI441::Y_AXIS );
     modelMtx = glm::rotate( modelMtx, mWobbleAmount, CSCI441::X_AXIS );
     mDrawBody(modelMtx, viewMtx, projMtx);
 
@@ -78,45 +74,4 @@ void Gengiben::mDrawEyebrow(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 pro
 
     glProgramUniform3fv(_shaderProgramHandle, _shaderProgramUniformLocations.materialColor, 1, &mEyebrowColor[0]);
     CSCI441::drawSolidCube(.2);
-}
-
-void Gengiben::goForward() {
-    mPos += glm::vec3(mMovementFactor*sin(mRot), 0, -mMovementFactor*cos(mRot));
-}
-
-void Gengiben::goBackward() {
-    mPos -= glm::vec3(mMovementFactor*sin(mRot), 0, -mMovementFactor*cos(mRot));
-}
-
-
-void Gengiben::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
-    // precompute the Model-View-Projection matrix on the CPU
-    glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
-    // then send it to the shader on the GPU to apply to every vertex
-    glProgramUniformMatrix4fv( _shaderProgramHandle, _shaderProgramUniformLocations.mvpMtx, 1, GL_FALSE, &mvpMtx[0][0] );
-
-    glm::mat3 normalMtx = glm::mat3( glm::transpose( glm::inverse( modelMtx )));
-    glProgramUniformMatrix3fv( _shaderProgramHandle, _shaderProgramUniformLocations.normalMtx, 1, GL_FALSE, &normalMtx[0][0] );
-}
-void Gengiben::rotate(float amount){
-    mRot += amount;
-}
-glm::vec3 Gengiben::getPos() {
-    return mPos;
-}
-float Gengiben::getRot() {
-    return mRot;
-}
-void Gengiben::setPos(glm::vec3 newPos) {
-    mPos = newPos;
-}
-void Gengiben::setRot(float newDir) {
-    mRot = newDir;
-}
-
-float Gengiben::getMoveFactor() {
-    return mMovementFactor;
-}
-void Gengiben::setMoveFactor(float newFactor) {
-    mMovementFactor = newFactor;
 }

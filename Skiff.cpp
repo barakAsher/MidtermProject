@@ -15,7 +15,6 @@ Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint norm
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor    = materialColorUniformLocation;
 
-    _rotatePlaneAngle = _PI / 2.0f;
 
     _colorBody = glm::vec3( 0.6f, 0.6f, 0.6f );
     _scaleBody = glm::vec3( 8.0f, 3.0f, 4.0f );
@@ -27,17 +26,8 @@ Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint norm
 }
 
 void Skiff::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
-    glm::vec3 drawPoint = this->getPosition();
-    drawPoint.y += 0.05;
-    modelMtx = glm::translate(modelMtx, drawPoint );
-
-    // rotate the skiff with our camera phi direction
-    GLfloat skiffRotate = this->getAngle();
-    modelMtx = glm::rotate(modelMtx, skiffRotate, CSCI441::Y_AXIS);
-    modelMtx = glm::rotate(modelMtx, glm::pi<float>() / 2, CSCI441::X_AXIS );
-
-    modelMtx = glm::rotate( modelMtx, -_rotatePlaneAngle, CSCI441::Y_AXIS );
-    modelMtx = glm::rotate( modelMtx, _rotatePlaneAngle, CSCI441::Z_AXIS );
+    modelMtx = glm::rotate( modelMtx, -getAngle(), CSCI441::Y_AXIS );
+    modelMtx = glm::rotate( modelMtx, getAngle(), CSCI441::Z_AXIS );
     _drawSkiffBody(modelMtx, viewMtx, projMtx);        // the body of our skiff
     _drawSkiffPropeller(true, modelMtx, viewMtx, projMtx);   // left propeller
     _drawSkiffPropeller(false, modelMtx, viewMtx, projMtx);   // right propeller
@@ -84,14 +74,4 @@ void Skiff::_drawSkiffPropeller(bool isLeftSide, glm::mat4 modelMtx, glm::mat4 v
     _computeAndSendMatrixUniforms(modelMtx2, viewMtx, projMtx);
 
     CSCI441::drawSolidCube( 0.1f );
-}
-
-void Skiff::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
-    // precompute the Model-View-Projection matrix on the CPU
-    glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
-    // then send it to the shader on the GPU to apply to every vertex
-    glProgramUniformMatrix4fv( _shaderProgramHandle, _shaderProgramUniformLocations.mvpMtx, 1, GL_FALSE, &mvpMtx[0][0] );
-
-    glm::mat3 normalMtx = glm::mat3( glm::transpose( glm::inverse( modelMtx )));
-    glProgramUniformMatrix3fv( _shaderProgramHandle, _shaderProgramUniformLocations.normalMtx, 1, GL_FALSE, &normalMtx[0][0] );
 }

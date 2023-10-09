@@ -46,19 +46,8 @@ Starlord::Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLin
 
 }
 
-//// changes the leg angle to animate the legs walking forward
-void Starlord::walkForward(){
-    legAngle = (legAngle + 0.05);
-    if(legAngle > 360) legAngle = 0;
-}
 
-//// changes the leg angle to animate the legs walking backward
-void Starlord::walkBackward(){
-    legAngle = (legAngle - 0.05);
-    if(legAngle < 0) legAngle = 360;
-}
-
-void Starlord::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ){
+void Starlord::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
     _drawBody(modelMtx, viewMtx, projMtx);
     _drawLeg(false,modelMtx, viewMtx, projMtx);
     _drawLeg(true,modelMtx, viewMtx, projMtx);
@@ -141,13 +130,4 @@ void Starlord::_drawEye(bool leftEye, glm::mat4 modelMtx, glm::mat4 viewMtx, glm
     glProgramUniform3fv(_shaderProgramHandle, _shaderProgramUniformLocations.materialColor, 1, &_colorEye[0]);
 
     CSCI441::drawSolidSphere( 0.5, 16, 16 );
-}
-
-//// sends mvp matrix to the uniform location for GPU
-void Starlord::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
-    // precompute the Model-View-Projection matrix on the CPU
-    glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
-    // then send it to the shader on the GPU to apply to every vertex
-    glProgramUniformMatrix4fv(_shaderProgramHandle, _shaderProgramUniformLocations.mvpMtx, 1, GL_FALSE,
-                              &mvpMtx[0][0]);
 }

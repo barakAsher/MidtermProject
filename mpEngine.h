@@ -49,10 +49,6 @@ public:
     GLfloat getTopEdge() const {return topEdge;}
     GLfloat getBottomEdge() const {return bottomEdge;}
 
-    // TODO prob should be private
-    std::vector<Player*> players;
-    GLint currentPlayerIdx = 0;
-    Player* currentPlayer;
 
 private:
     void mSetupGLFW() final;
@@ -102,6 +98,10 @@ private:
     GLfloat rightEdge;
     GLfloat topEdge;
     GLfloat bottomEdge;
+
+    std::vector<Player*> _players;
+    GLint _currentPlayerIdx;
+    Player* _currentPlayer;
 
     /// \desc the size of the world (controls the ground size and locations of buildings)
     static constexpr GLfloat WORLD_SIZE = 55.0f;

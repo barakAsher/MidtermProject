@@ -29,6 +29,7 @@ mpEngine::mpEngine()
 
     _mousePosition = glm::vec2(MOUSE_UNINITIALIZED, MOUSE_UNINITIALIZED );
     _leftMouseButtonState = GLFW_RELEASE;
+    _currentPlayerIdx = 0;
 }
 
 mpEngine::~mpEngine() {
@@ -49,9 +50,9 @@ void mpEngine::handleKeyEvent(GLint key, GLint action) {
                 break;
 
             case GLFW_KEY_LEFT_CONTROL:
-                currentPlayerIdx++;
-                if (currentPlayerIdx > players.size() - 1)
-                    currentPlayerIdx = 0;
+                _currentPlayerIdx++;
+                if (_currentPlayerIdx > _players.size() - 1)
+                    _currentPlayerIdx = 0;
 
             default: break; // suppress CLion warning
         }
@@ -153,7 +154,7 @@ void mpEngine::mSetupBuffers() {
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
 
-    players.push_back(pSkiff);
+    _players.push_back(pSkiff);
 
     Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
                             _lightingShaderUniformLocations.mvpMatrix,
@@ -161,19 +162,19 @@ void mpEngine::mSetupBuffers() {
                             _lightingShaderUniformLocations.materialColor);
 
 
-    players.push_back((pVehicle));
+    _players.push_back((pVehicle));
 
     Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
-    players.push_back(pStarlord);
+    _players.push_back(pStarlord);
 
     Player* pGengiben = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
                                       _lightingShaderUniformLocations.mvpMatrix,
                                       _lightingShaderUniformLocations.normalMatrix,
                                       _lightingShaderUniformLocations.materialColor);
-    players.push_back(pGengiben);
+    _players.push_back(pGengiben);
 
     _createGroundBuffers();
     _generateEnvironment();
@@ -293,11 +294,12 @@ void mpEngine::_generateEnvironment() {
 
 void mpEngine::mSetupScene() {
     // set up arcball cam
-    currentPlayer = players[currentPlayerIdx];
+    _currentPlayer = _players[_currentPlayerIdx];
     pArcballCam = new ArcballCam();
     pArcballCam->setTheta(-M_PI / 1.0f );
     pArcballCam->setPhi(M_PI / 1.5f );
-    pArcballCam->setLookAtPoint(currentPlayer->getPosition());
+    pArcballCam->setRadius(5);
+    pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
 
 //    // set up overhead cam
@@ -355,7 +357,7 @@ void mpEngine::mCleanupBuffers() {
 // Rendering / Drawing Functions - this is where the magic happens!
 
 void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
-    pArcballCam->setLookAtPoint(currentPlayer->getPosition());
+    pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
 
     // use our lighting shader program
@@ -384,64 +386,52 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
     //// BEGIN DRAWING THE SKIFF ////
     glm::mat4 modelMtx(1.0f);
-    // we are going to cheat and use our look at point to place our skiff so that it is always in view
 
-    // draw our players
-    for(int i; i < players.size(); i++) {
-        players[i]->drawPlayer(modelMtx, viewMtx, projMtx);
+    // draw our _players
+    for(int i; i < _players.size(); i++) {
+        _players[i]->drawPlayer(modelMtx, viewMtx, projMtx);
     }
-//    currentPlayer->drawPlayer(modelMtx, viewMtx, projMtx);
-
-//    glm::vec3 translationVector = _pSkiff->getPosition() + glm::vec3(-2.0f, 0.0f, 3.0f);
-//    modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
-//    modelMtx = glm::scale(modelMtx, {3,3,3});
-//    _pVehicle->drawPlayer(modelMtx, viewMtx, projMtx);
-//
-//    translationVector = _pSkiff->getPosition() + glm::vec3(0.0f, 0.0f, 3.0f);
-//    modelMtx = glm::translate(glm::mat4(1.0f), translationVector);
-//    modelMtx = glm::scale(modelMtx, {0.3,0.3,0.3});
-//    _pStarlord->drawPlayer(modelMtx, viewMtx, projMtx);
 
 
     //// END DRAWING THE SKIFF ////
 }
 
 void mpEngine::_updateScene() {
-    currentPlayer = players[currentPlayerIdx];
+    _currentPlayer = _players[_currentPlayerIdx];
 
     GLfloat skiffMovementSpeed = 0.1f;
     // turn right
     if( _keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT] ) {
-        GLfloat currAngle = currentPlayer->getAngle();
+        GLfloat currAngle = _currentPlayer->getAngle();
         currAngle -= _cameraSpeed.y;
-        currentPlayer->setAngle(currAngle);
+        _currentPlayer->setAngle(currAngle);
         pArcballCam->rotate(_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
 //        pOverheadCam->rotate(_cameraSpeed.y, 0.0f);
 //        pOverheadCam->recomputeOrientation();
-        currentPlayer->setPosition(pArcballCam->getLookAtPoint());
+//        _currentPlayer->setPosition(pArcballCam->getLookAtPoint());
     }
     // turn left
     if( _keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT] ) {
-        GLfloat currAngle = currentPlayer->getAngle();
+        GLfloat currAngle = _currentPlayer->getAngle();
         currAngle += _cameraSpeed.y;
-        currentPlayer->setAngle(currAngle);
+        _currentPlayer->setAngle(currAngle);
         pArcballCam->rotate(-_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
 //        pOverheadCam->rotate(-_cameraSpeed.y, 0.0f);
 //        pOverheadCam->recomputeOrientation();
-        currentPlayer->setPosition(pArcballCam->getLookAtPoint());
+//        _currentPlayer->setPosition(pArcballCam->getLookAtPoint());
     }
     // go forward
     if( _keys[GLFW_KEY_W] || _keys[GLFW_KEY_UP] ) {
-        glm::vec3 currPoint = currentPlayer->getPosition();
+        glm::vec3 currPoint = _currentPlayer->getPosition();
         glm::vec3 projectedPoint = currPoint;
-        projectedPoint.z -= skiffMovementSpeed * cos(currentPlayer->getAngle());
-        projectedPoint.x -= skiffMovementSpeed * sin(currentPlayer->getAngle());
+        projectedPoint.z -= skiffMovementSpeed * cos(_currentPlayer->getAngle());
+        projectedPoint.x -= skiffMovementSpeed * sin(_currentPlayer->getAngle());
         // ensure skiff stays in ground plane
         if (projectedPoint.z > bottomEdge && projectedPoint.z < topEdge && projectedPoint.x < rightEdge && projectedPoint.x > leftEdge) {
-            currentPlayer->setPosition(projectedPoint);
-            pArcballCam->setLookAtPoint(currentPlayer->getPosition());
+            _currentPlayer->setPosition(projectedPoint);
+            pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
             pArcballCam->recomputeOrientation();
 //            headCam->setLookAtPoint(projectedPoint);
 //            ppOverOverheadCam->recomputeOrientation();
@@ -449,14 +439,14 @@ void mpEngine::_updateScene() {
     }
     // go backwards
     if( _keys[GLFW_KEY_S] || _keys[GLFW_KEY_DOWN] ) {
-        glm::vec3 currPoint = currentPlayer->getPosition();
+        glm::vec3 currPoint = _currentPlayer->getPosition();
         glm::vec3 projectedPoint = currPoint;
-        projectedPoint.z += skiffMovementSpeed * cos(currentPlayer->getAngle());
-        projectedPoint.x += skiffMovementSpeed * sin(currentPlayer->getAngle());
+        projectedPoint.z += skiffMovementSpeed * cos(_currentPlayer->getAngle());
+        projectedPoint.x += skiffMovementSpeed * sin(_currentPlayer->getAngle());
         // ensure skiff stays in ground plane
         if (projectedPoint.z > bottomEdge && projectedPoint.z < topEdge && projectedPoint.x < rightEdge && projectedPoint.x > leftEdge) {
-            currentPlayer->setPosition(projectedPoint);
-            pArcballCam->setLookAtPoint(currentPlayer->getPosition());
+            _currentPlayer->setPosition(projectedPoint);
+            pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
             pArcballCam->recomputeOrientation();
 //            pOverheadCam->setLookAtPoint(projectedPoint);
 //            pOverheadCam->recomputeOrientation();

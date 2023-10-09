@@ -23,23 +23,9 @@ public:
     /// \param projMtx camera projection matrix to apply to plane
     /// \note internally uses the provided shader program and sets the necessary uniforms
     /// for the MVP and Normal Matrices as well as the material diffuse color
-    void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
+    void drawPlayer( glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
 
-    /// \desc simulates the plane flying forward by rotating the propeller clockwise
-    void flyForward();
-    /// \desc simulates the plane flying backward by rotating the propeller counter-clockwise
-    //void flyBackward();
 
-    //return the position of the vehicle
-    glm::vec3 getPosition() const {
-        return _position;
-    }
-
-    /// \desc Translates the vehicle in a direction
-    void translate(glm::vec3 translation);
-
-    /// \desc Rotates the vehicle about its center
-    void rotate(GLfloat angle);
 
 private:
     /// \desc current angle of rotation for the propeller
@@ -47,20 +33,7 @@ private:
     /// \desc one rotation step
     GLfloat _propAngleRotationSpeed;
 
-    /// \desc handle of the shader program to use when drawing the plane
-    GLuint _shaderProgramHandle;
-    /// \desc stores the uniform locations needed for the plan information
-    struct ShaderProgramUniformLocations {
-        /// \desc location of the precomputed ModelViewProjection matrix
-        GLint mvpMtx;
-        /// \desc location of the precomputed Normal matrix
-        GLint normalMtx;
-        /// \desc location of the material diffuse color
-        GLint materialColor;
-    } _shaderProgramUniformLocations;
 
-    /// \desc angle to rotate our plane at
-    GLfloat _rotatePlaneAngle;
     GLfloat _rotationAngle;
     glm::vec3 _forwardDirection;
 
@@ -124,13 +97,6 @@ private:
     /// \param projMtx camera projection matrix to apply to plane
     void _drawPlaneTail(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
 
-    /// \desc precomputes the matrix uniforms CPU-side and then sends them
-    /// to the GPU to be used in the shader for each vertex.  It is more efficient
-    /// to calculate these once and then use the resultant product in the shader.
-    /// \param modelMtx model transformation matrix
-    /// \param viewMtx camera view matrix
-    /// \param projMtx camera projection matrix
-    void _computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const;
 
 };
 

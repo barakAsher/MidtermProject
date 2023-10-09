@@ -15,7 +15,6 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint 
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor    = materialColorUniformLocation;
 
-    _rotatePlaneAngle = _PI / 2.0f;
     _rotationAngle = 0.0;
     _forwardDirection = glm::vec3(1.0f, 0.0f, 0.0f);
 
@@ -41,7 +40,7 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint 
     _colorTail = glm::vec3( 1.0f, 1.0f, 0.0f );
 }
 
-void Vehicle::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
+void Vehicle::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
 
     //Ensure that the the plane is drawn correctly after it has been rotated
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), _rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -55,11 +54,6 @@ void Vehicle::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMt
     _drawPlaneTail(modelMtx, viewMtx, projMtx);        // the tail
 }
 
-//Used from lab 5
-void Vehicle::flyForward() {
-    _propAngle += _propAngleRotationSpeed;
-    if( _propAngle > _2PI ) _propAngle -= _2PI;
-}
 
 void Vehicle::_drawPlaneBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
@@ -124,31 +118,3 @@ void Vehicle::_drawPlaneTail(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 pr
 
     CSCI441::drawSolidCone( 0.02f, 0.1f, 16, 16 );
 }
-
-void Vehicle::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
-    // precompute the Model-View-Projection matrix on the CPU
-    glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
-    // then send it to the shader on the GPU to apply to every vertex
-    glProgramUniformMatrix4fv( _shaderProgramHandle, _shaderProgramUniformLocations.mvpMtx, 1, GL_FALSE, &mvpMtx[0][0] );
-
-    glm::mat3 normalMtx = glm::mat3( glm::transpose( glm::inverse( modelMtx )));
-    glProgramUniformMatrix3fv( _shaderProgramHandle, _shaderProgramUniformLocations.normalMtx, 1, GL_FALSE, &normalMtx[0][0] );
-}
-
-//used to move the plane when arrow W and S keys are hit in the engine
-void Vehicle::translate(glm::vec3 translation) {
-    //should only need to update the x and the y since we don't need to rotate/move up
-    _position += translation.x * _forwardDirection + translation.y * _forwardDirection;
-}
-
-//Updated the forward direction of the plane. This allows the arrow keys to always move the plane in the direction it faces
-void Vehicle::rotate(float angle) {
-    //update angle
-    _rotationAngle += angle;
-    //create a rotation matrix and normalize it
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), _rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-    _forwardDirection = glm::normalize(glm::vec3(rotationMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)));
-}
-
-
-

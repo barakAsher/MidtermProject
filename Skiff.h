@@ -23,7 +23,7 @@ public:
     /// \param projMtx camera projection matrix to apply to skiff
     /// \note internally uses the provided shader program and sets the necessary uniforms
     /// for the MVP and Normal Matrices as well as the material diffuse color
-    void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx);
+    void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) override;
 
     /// \desc simulates the skiff moving by rotating the propellers
     void rotateProps();
@@ -49,20 +49,7 @@ private:
     /// \desc one rotation step
     GLfloat _propAngleRotationSpeed;
 
-    /// \desc handle of the shader program to use when drawing the skiff
-    GLuint _shaderProgramHandle;
-    /// \desc stores the uniform locations needed for the plan information
-    struct ShaderProgramUniformLocations {
-        /// \desc location of the precomputed ModelViewProjection matrix
-        GLint mvpMtx;
-        /// \desc location of the precomputed Normal matrix
-        GLint normalMtx;
-        /// \desc location of the material diffuse color
-        GLint materialColor;
-    } _shaderProgramUniformLocations;
 
-    /// \desc angle to rotate our skiff at
-    GLfloat _rotatePlaneAngle;
 
     /// \desc color the skiff's body
     glm::vec3 _colorBody;
@@ -91,14 +78,6 @@ private:
     /// \param viewMtx camera view matrix to apply to skiff
     /// \param projMtx camera projection matrix to apply to skiff
     void _drawSkiffPropeller(bool isLeftSide, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
-
-    /// \desc precomputes the matrix uniforms CPU-side and then sends them
-    /// to the GPU to be used in the shader for each vertex.  It is more efficient
-    /// to calculate these once and then use the resultant product in the shader.
-    /// \param modelMtx model transformation matrix
-    /// \param viewMtx camera view matrix
-    /// \param projMtx camera projection matrix
-    void _computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const;
 };
 
 #endif //SKIFF_H
