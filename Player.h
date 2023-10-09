@@ -9,16 +9,13 @@
 
 class Player {
 public:
-    // constructor
-    Player( glm::vec3 position) {this->_position=position;}
-
     // getters and setters
     glm::vec3 getPosition() {return  _position;}
     void setPosition(glm::vec3 position) {this->_position = position;}
 
     // movement functions
-    virtual void moveForward();
-    virtual void moveBackward();
+//    virtual void moveForward();
+//    virtual void moveBackward();
 private:
     glm::vec3 _position;
 };

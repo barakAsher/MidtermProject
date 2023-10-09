@@ -6,7 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-class Skiff {
+#include "Player.h"
+
+class Skiff : public Player{
 public:
     /// \desc creates a simple skiff that gives the appearance of floating
     /// \param shaderProgramHandle shader program handle that the skiff should be drawn using
@@ -33,6 +35,8 @@ public:
     /// \desc getter and setter for the position that the skiff should be drawn at
     void setPlaneDrawPoint(glm::vec3 skiffDrawPoint) {this->_skiffDrawPoint = skiffDrawPoint;}
     glm::vec3 getPlaneDrawPoint() {return _skiffDrawPoint;}
+
+
 
 private:
     /// \desc position that the skiff should be drawn at
