@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14)
 project(mp)
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES main.cpp mpEngine.cpp mpEngine.h Skiff.cpp Skiff.h
+        Player.cpp
+        Player.h
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
