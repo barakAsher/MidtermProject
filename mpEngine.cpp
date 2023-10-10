@@ -1,4 +1,5 @@
 #include "mpEngine.h"
+#include "iostream"
 
 #include <CSCI441/objects.hpp>
 
@@ -30,11 +31,13 @@ mpEngine::mpEngine()
     _mousePosition = glm::vec2(MOUSE_UNINITIALIZED, MOUSE_UNINITIALIZED );
     _leftMouseButtonState = GLFW_RELEASE;
     _currentPlayerIdx = 0;
+    _currentCam = 1;
+    _fpCamShown = false;
 }
 
 mpEngine::~mpEngine() {
     delete pArcballCam;
-//    delete pOverheadCam;
+    delete pFreeCam;
 }
 
 void mpEngine::handleKeyEvent(GLint key, GLint action) {
@@ -54,6 +57,16 @@ void mpEngine::handleKeyEvent(GLint key, GLint action) {
                 if (_currentPlayerIdx > _players.size() - 1)
                     _currentPlayerIdx = 0;
                 pArcballCam->setTheta(glm::pi<float>() - _players[_currentPlayerIdx]->getAngle());
+                break;
+            case GLFW_KEY_1:
+                _currentCam=1;
+                break;
+            case GLFW_KEY_2:
+                _currentCam=2;
+                break;
+            case GLFW_KEY_3:
+                _fpCamShown = !_fpCamShown;
+                break;
 
             default: break; // suppress CLion warning
         }
@@ -76,31 +89,34 @@ void mpEngine::handleCursorPositionEvent(glm::vec2 currMousePosition) {
 
     // if the left mouse button is being held down while the mouse is moving
     if(_leftMouseButtonState == GLFW_PRESS) {
-        // zoom in/out
-        if ( _keys[GLFW_KEY_LEFT_SHIFT] || _keys[GLFW_KEY_RIGHT_SHIFT] ) {
-            GLfloat radius = pArcballCam->getRadius();
-            if(_mousePosition.y > currMousePosition.y) {
-                radius += 0.25f;
+        if(_currentCam == 1){   //move arcball
+            // zoom in/out
+            if ( _keys[GLFW_KEY_LEFT_SHIFT] || _keys[GLFW_KEY_RIGHT_SHIFT] ) {
+                GLfloat radius = pArcballCam->getRadius();
+                if(_mousePosition.y > currMousePosition.y) {
+                    radius += 0.25f;
+                }
+                else if (_mousePosition.y < currMousePosition.y) {
+                    radius -= 0.25f;
+                }
+                // don't zoom in too far
+                if (radius > 1.0f) {
+                    pArcballCam->setRadius(radius);
+                }
+                pArcballCam->recomputeOrientation();
             }
-            else if (_mousePosition.y < currMousePosition.y) {
-                radius -= 0.25f;
+            else {
+                // rotate the camera by the distance the mouse moved
+                pArcballCam->rotate((currMousePosition.x - _mousePosition.x) * 0.005f,
+                                    (_mousePosition.y - currMousePosition.y) * 0.005f );
             }
-            // don't zoom in too far
-            if (radius > 1.0f) {
-                pArcballCam->setRadius(radius);
-//                pOverheadCam->setRadius(radius * 5);
-            }
-            pArcballCam->recomputeOrientation();
-//            pOverheadCam->recomputeOrientation();
         }
-        else {
-            // rotate the camera by the distance the mouse moved
-            pArcballCam->rotate((currMousePosition.x - _mousePosition.x) * 0.005f,
-                                (_mousePosition.y - currMousePosition.y) * 0.005f );
-//            pOverheadCam->rotate((currMousePosition.x - _mousePosition.x) * 0.005f,
-//                                (_mousePosition.y - currMousePosition.y) * 0.005f );
+        else{
+            glm::vec2 mouseChange = (currMousePosition-_mousePosition);
+            pFreeCam->rotate(mouseChange.x*0.005f,-mouseChange.y*0.005f);
         }
     }
+
 
     // update the mouse position
     _mousePosition = currMousePosition;
@@ -306,12 +322,11 @@ void mpEngine::mSetupScene() {
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
 
-//    // set up overhead cam
-//    pOverheadCam = new ArcballCam();
-//    pOverheadCam->setTheta(-M_PI);
-//    pOverheadCam->setPhi(M_PI-0.001);
-//    pOverheadCam->setRadius(pArcballCam->getRadius() * 3);
-//    pOverheadCam->recomputeOrientation();
+    pFreeCam = new CSCI441::FreeCam();
+    pFreeCam->setPosition(glm::vec3(30.0f, 20.0f, 15.0f) );
+    pFreeCam->setTheta(-M_PI / 3.0f );
+    pFreeCam->setPhi(M_PI / 2.8f );
+    pFreeCam->recomputeOrientation();
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
@@ -350,10 +365,6 @@ void mpEngine::mCleanupBuffers() {
     fprintf( stdout, "[INFO]: ...deleting VBOs....\n" );
     CSCI441::deleteObjectVBOs();
 
-//    fprintf( stdout, "[INFO]: ...deleting models..\n" );
-//    delete _pSkiff;
-//    delete _pVehicle;
-//    delete _pStarlord;
 }
 
 //*************************************************************************************
@@ -457,7 +468,36 @@ void mpEngine::_updateScene() {
 //            pOverheadCam->recomputeOrientation();
         }
     }
+    if(_currentCam == 2){
+        float currTheta = pFreeCam->getTheta();
+        float currPhi = pFreeCam->getPhi();
+        glm::vec3 currPos = pFreeCam->getPosition();
 
+        if(_keys[GLFW_KEY_I]){
+            std::cout << "HERERE" << std::endl;
+            currPhi += _cameraSpeed.y;
+        }
+        if(_keys[GLFW_KEY_K]){
+            currPhi -= _cameraSpeed.y;
+        }
+        if(_keys[GLFW_KEY_J]){
+            currTheta -= _cameraSpeed.y;
+        }
+        if(_keys[GLFW_KEY_L]){
+            currTheta += _cameraSpeed.y;
+        }
+        if(_keys[GLFW_KEY_SPACE]){
+            if(_keys[GLFW_KEY_LEFT_SHIFT] || _keys[GLFW_KEY_RIGHT_SHIFT]){
+                pFreeCam->moveBackward(_cameraSpeed.x/1.5f);
+            }
+            else{
+                pFreeCam->moveForward(_cameraSpeed.x/1.5f);
+            }
+        }
+        pFreeCam->setTheta(currTheta);
+        pFreeCam->setPhi(currPhi);
+        pFreeCam->recomputeOrientation();
+    }
 }
 
 void mpEngine::run() {
@@ -474,15 +514,17 @@ void mpEngine::run() {
         GLint framebufferWidth, framebufferHeight;
         glfwGetFramebufferSize( mpWindow, &framebufferWidth, &framebufferHeight );
 
+
         // update the viewport - tell OpenGL we want to render to the whole window
         glViewport( 0, 0, framebufferWidth, framebufferHeight );
         // draw everything to the window
-        _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+        if(_currentCam==1){
+            _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+        }
+        else if(_currentCam == 2){
+            _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
+        }
 
-//        // overhead camera window
-//        glClear(GL_DEPTH_BUFFER_BIT);
-//        glViewport(framebufferWidth - 200, framebufferHeight - 200, 200, 200);
-//        _renderScene(pOverheadCam->getViewMatrix(), pOverheadCam->getProjectionMatrix());
 
         _updateScene();
 

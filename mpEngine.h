@@ -8,6 +8,8 @@
 
 #include "Skiff.h"
 #include "ArcballCam.hpp"
+#include "CSCI441/FreeCam.hpp"
+#include "CSCI441/FixedCam.hpp"
 #include "Vehicle.h"
 #include "Player.h"
 #include "Starlord.h"
@@ -81,9 +83,10 @@ private:
 
     /// \desc the arcball camera in our world
     ArcballCam* pArcballCam;
+    CSCI441::FreeCam* pFreeCam;
 
-    /// \desc the overhead camera in our world
-    ArcballCam* pOverheadCam;
+    int _currentCam;
+    bool _fpCamShown;
 
     /// \desc pair of values to store the speed the camera can move/rotate.
     /// \brief x = forward/backward delta, y = rotational delta
