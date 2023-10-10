@@ -520,6 +520,11 @@ void mpEngine::run() {
         // draw everything to the window
         if(_currentCam==1){
             _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+            if(_fpCamShown){
+                glClear(GL_DEPTH_BUFFER_BIT);
+                glViewport(framebufferWidth*.75f, framebufferHeight*.75f, framebufferWidth*.25f, framebufferHeight*.25f);
+                _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+            }
         }
         else if(_currentCam == 2){
             _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
