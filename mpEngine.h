@@ -11,6 +11,7 @@
 #include "Vehicle.h"
 #include "Player.h"
 #include "Starlord.h"
+#include "Gengiben.h"
 
 
 #include <vector>

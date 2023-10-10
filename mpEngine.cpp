@@ -153,7 +153,7 @@ void mpEngine::mSetupBuffers() {
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
-
+    pSkiff->setPosition({0,0,0});
     _players.push_back(pSkiff);
 
     Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
@@ -161,20 +161,23 @@ void mpEngine::mSetupBuffers() {
                             _lightingShaderUniformLocations.normalMatrix,
                             _lightingShaderUniformLocations.materialColor);
 
-
+    pVehicle->setPosition({1,0,0});
     _players.push_back((pVehicle));
 
     Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
+    pStarlord->setPosition({2,0,0});
     _players.push_back(pStarlord);
 
-    Player* pGengiben = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+    Player* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
                                       _lightingShaderUniformLocations.mvpMatrix,
                                       _lightingShaderUniformLocations.normalMatrix,
                                       _lightingShaderUniformLocations.materialColor);
+    pGengiben->setPosition({3,1,0});
     _players.push_back(pGengiben);
+
 
     _createGroundBuffers();
     _generateEnvironment();
@@ -296,8 +299,8 @@ void mpEngine::mSetupScene() {
     // set up arcball cam
     _currentPlayer = _players[_currentPlayerIdx];
     pArcballCam = new ArcballCam();
-    pArcballCam->setTheta(-M_PI / 1.0f );
-    pArcballCam->setPhi(M_PI / 1.5f );
+    pArcballCam->setTheta(M_PI );
+    pArcballCam->setPhi(M_PI * 2 / 2.8f );
     pArcballCam->setRadius(5);
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
@@ -388,9 +391,10 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     glm::mat4 modelMtx(1.0f);
 
     // draw our _players
-    for(int i; i < _players.size(); i++) {
-        _players[i]->drawPlayer(modelMtx, viewMtx, projMtx);
+    for(Player* player: _players){
+        player->drawPlayer(modelMtx, viewMtx, projMtx);
     }
+//    _currentPlayer->drawPlayer(modelMtx, viewMtx, projMtx);
 
 
     //// END DRAWING THE SKIFF ////

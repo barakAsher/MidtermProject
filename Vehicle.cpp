@@ -15,7 +15,6 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint 
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor    = materialColorUniformLocation;
 
-    _rotationAngle = 0.0;
     _forwardDirection = glm::vec3(1.0f, 0.0f, 0.0f);
 
 
@@ -43,8 +42,10 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint 
 void Vehicle::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
 
     //Ensure that the the plane is drawn correctly after it has been rotated
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), _rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMtx = glm::translate(modelMtx, getPosition());
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), getAngle()-glm::pi<float>()/2, CSCI441::Y_AXIS);
     modelMtx = modelMtx * rotationMatrix;
+
 
     _drawPlaneBody(modelMtx, viewMtx, projMtx);        // the body of our plane
     _drawPlaneWing(true, modelMtx, viewMtx, projMtx);  // the left wing

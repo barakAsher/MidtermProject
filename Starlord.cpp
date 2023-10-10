@@ -48,6 +48,9 @@ Starlord::Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLin
 
 
 void Starlord::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
+    modelMtx = glm::translate(modelMtx, getPosition());
+    modelMtx = glm::rotate(modelMtx, getAngle() + glm::pi<float>(), CSCI441::Y_AXIS);
+    modelMtx = glm::scale(modelMtx, {.3,.3,.3});
     _drawBody(modelMtx, viewMtx, projMtx);
     _drawLeg(false,modelMtx, viewMtx, projMtx);
     _drawLeg(true,modelMtx, viewMtx, projMtx);

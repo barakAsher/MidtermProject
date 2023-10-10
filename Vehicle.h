@@ -34,7 +34,6 @@ private:
     GLfloat _propAngleRotationSpeed;
 
 
-    GLfloat _rotationAngle;
     glm::vec3 _forwardDirection;
 
     /// \desc color the plane's body

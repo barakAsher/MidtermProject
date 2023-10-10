@@ -26,8 +26,8 @@ Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint norm
 }
 
 void Skiff::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
-    modelMtx = glm::rotate( modelMtx, -getAngle(), CSCI441::Y_AXIS );
-    modelMtx = glm::rotate( modelMtx, getAngle(), CSCI441::Z_AXIS );
+    modelMtx = glm::translate(modelMtx, getPosition());
+    modelMtx = glm::rotate( modelMtx, getAngle() - glm::pi<float>()/2, CSCI441::Y_AXIS );
     _drawSkiffBody(modelMtx, viewMtx, projMtx);        // the body of our skiff
     _drawSkiffPropeller(true, modelMtx, viewMtx, projMtx);   // left propeller
     _drawSkiffPropeller(false, modelMtx, viewMtx, projMtx);   // right propeller
