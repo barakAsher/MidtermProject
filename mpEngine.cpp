@@ -53,6 +53,7 @@ void mpEngine::handleKeyEvent(GLint key, GLint action) {
                 _currentPlayerIdx++;
                 if (_currentPlayerIdx > _players.size() - 1)
                     _currentPlayerIdx = 0;
+                pArcballCam->setTheta(glm::pi<float>() - _players[_currentPlayerIdx]->getAngle());
 
             default: break; // suppress CLion warning
         }
