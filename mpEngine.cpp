@@ -419,10 +419,18 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     //// END DRAWING THE BUILDINGS ////
 
     for( const MushroomData& currentMushroomData : _mushrooms ) {
-        CSCI441::drawSolidCone(3.0, 1.0, 3, 3);
+        _computeAndSendMatrixUniforms(currentMushroomData.modelMatrix, viewMtx, projMtx);
+
+        _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, currentMushroomData.color);
+
+        CSCI441::drawSolidCone(1.0, 2.0, 3, 3);
+    }
+
+    for( const MushroomData& currentMushroomData : _mushrooms ) {
+
 //        CSCI441::drawSolidSphere(1.0, 12, 12);
         // Get the existing model matrix and move the sphere up
-        glm::mat4 translatedModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 1.0f, 0.0f)) * currentMushroomData.modelMatrix;
+        glm::mat4 translatedModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 2.5f, 0.0f)) * currentMushroomData.modelMatrix;
 
         _computeAndSendMatrixUniforms(translatedModelMatrix, viewMtx, projMtx);
         _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, currentMushroomData.color);
