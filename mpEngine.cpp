@@ -154,6 +154,11 @@ void mpEngine::mSetupShaders() {
     _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("dirLight.color");
     _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("dirLight.direction");
     _lightingShaderUniformLocations.normalMatrix   = _lightingShaderProgram->getUniformLocation("normalMatrix");
+    _lightingShaderUniformLocations.pLightColor     = _lightingShaderProgram->getUniformLocation("pointLight.color");
+    _lightingShaderUniformLocations.pLightPos =     _lightingShaderProgram->getUniformLocation("pointLight.pos");
+    _lightingShaderUniformLocations.pLightAttenLin =     _lightingShaderProgram->getUniformLocation("pointLight.atten.lin");
+    _lightingShaderUniformLocations.pLightAttenQuad =     _lightingShaderProgram->getUniformLocation("pointLight.atten.quad");
+    _lightingShaderUniformLocations.pLightAttenExp =     _lightingShaderProgram->getUniformLocation("pointLight.atten.exp");
 
     // assign attributes
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
@@ -332,6 +337,8 @@ void mpEngine::mSetupScene() {
 
     // set lighting uniforms
     glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
+
+    glm::vec3 pLightPos = {10,100,10};
     glProgramUniform3fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.lightDirection,
@@ -345,6 +352,37 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
             );
+    glProgramUniform3fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightPos,
+            1,
+            &pLightPos[0]
+    );
+    glProgramUniform3fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightColor,
+            1,
+            &lightColor[0]
+    );
+    float lin=0;float quad=5;float exp=0;
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightAttenLin,
+            1,
+            &lin
+    );
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightAttenQuad,
+            1,
+            &quad
+    );
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightAttenExp,
+            1,
+            &exp
+    );
 }
 
 

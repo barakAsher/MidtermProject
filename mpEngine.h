@@ -141,6 +141,11 @@ private:
         GLint lightColor;
         GLint lightDirection;
         GLint normalMatrix;
+        GLint pLightPos;
+        GLint pLightColor;
+        GLint pLightAttenLin;
+        GLint pLightAttenQuad;
+        GLint pLightAttenExp;
 
     } _lightingShaderUniformLocations;
     /// \desc stores the locations of all of our shader attributes
