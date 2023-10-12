@@ -150,10 +150,16 @@ void mpEngine::mSetupShaders() {
 
     // assign uniforms
     _lightingShaderUniformLocations.mvpMatrix      = _lightingShaderProgram->getUniformLocation("mvpMatrix");
+    _lightingShaderUniformLocations.modelMtx      = _lightingShaderProgram->getUniformLocation("modelMtx");
     _lightingShaderUniformLocations.materialColor  = _lightingShaderProgram->getUniformLocation("materialColor");
-    _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("lightColor");
-    _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("lightDirection");
+    _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("dirLight.color");
+    _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("dirLight.direction");
     _lightingShaderUniformLocations.normalMatrix   = _lightingShaderProgram->getUniformLocation("normalMatrix");
+    _lightingShaderUniformLocations.pLightColor     = _lightingShaderProgram->getUniformLocation("pointLight.color");
+    _lightingShaderUniformLocations.pLightPos =     _lightingShaderProgram->getUniformLocation("pointLight.pos");
+    _lightingShaderUniformLocations.pLightAttenLin =     _lightingShaderProgram->getUniformLocation("pointLight.atten.lin");
+    _lightingShaderUniformLocations.pLightAttenQuad =     _lightingShaderProgram->getUniformLocation("pointLight.atten.quad");
+    _lightingShaderUniformLocations.pLightAttenExp =     _lightingShaderProgram->getUniformLocation("pointLight.atten.exp");
 
     // assign attributes
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
@@ -168,30 +174,34 @@ void mpEngine::mSetupBuffers() {
     // give the skiff the normal matrix location
     Player* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
+                        _lightingShaderUniformLocations.modelMtx,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
     pSkiff->setPosition({0,0,0});
     _players.push_back(pSkiff);
 
     Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
-                            _lightingShaderUniformLocations.mvpMatrix,
-                            _lightingShaderUniformLocations.normalMatrix,
-                            _lightingShaderUniformLocations.materialColor);
+                                   _lightingShaderUniformLocations.mvpMatrix,
+                                   _lightingShaderUniformLocations.modelMtx,
+                                   _lightingShaderUniformLocations.normalMatrix,
+                                   _lightingShaderUniformLocations.materialColor);
 
     pVehicle->setPosition({1,0,0});
     _players.push_back((pVehicle));
 
     Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
-                        _lightingShaderUniformLocations.mvpMatrix,
-                        _lightingShaderUniformLocations.normalMatrix,
-                        _lightingShaderUniformLocations.materialColor);
+                                     _lightingShaderUniformLocations.mvpMatrix,
+                                     _lightingShaderUniformLocations.modelMtx,
+                                     _lightingShaderUniformLocations.normalMatrix,
+                                     _lightingShaderUniformLocations.materialColor);
     pStarlord->setPosition({2,0,0});
     _players.push_back(pStarlord);
 
     Player* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
-                                      _lightingShaderUniformLocations.mvpMatrix,
-                                      _lightingShaderUniformLocations.normalMatrix,
-                                      _lightingShaderUniformLocations.materialColor);
+                                     _lightingShaderUniformLocations.mvpMatrix,
+                                     _lightingShaderUniformLocations.modelMtx,
+                                     _lightingShaderUniformLocations.normalMatrix,
+                                     _lightingShaderUniformLocations.materialColor);
     pGengiben->setPosition({3,1,0});
     _players.push_back(pGengiben);
 
@@ -220,24 +230,50 @@ void mpEngine::_createGroundBuffers() {
     std::vector<GLushort> indices;
     // draw horizontal lines
     GLushort currentIndex = 0;
-    for(GLfloat i = LEFT_END_POINT; i <= RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
-        Vertex bottomVert = {i, 0.0f, BOTTOM_END_POINT,0,1,0};
-        Vertex topVert = {i, 0.0f, TOP_END_POINT ,0,1,0};
-        vertices.emplace_back(bottomVert);
-        vertices.emplace_back(topVert);
-        indices.emplace_back(currentIndex);
-        indices.emplace_back(currentIndex + 1);
-        currentIndex += 2;
+//    for(GLfloat i = LEFT_END_POINT; i <= RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
+//        Vertex bottomVert = {i, 0.0f, BOTTOM_END_POINT,0,1,0};
+//        Vertex topVert = {i, 0.0f, TOP_END_POINT ,0,1,0};
+//        vertices.emplace_back(bottomVert);
+//        vertices.emplace_back(topVert);
+//        indices.emplace_back(currentIndex);
+//        indices.emplace_back(currentIndex + 1);
+//        currentIndex += 2;
+//    }
+//    // draw vertical lines
+//    for(GLfloat j = BOTTOM_END_POINT; j <= TOP_END_POINT; j += GRID_SPACING_LENGTH) {
+//        Vertex leftVert = {LEFT_END_POINT, 0.0f, j ,0,1,0};
+//        Vertex rightVert = {RIGHT_END_POINT, 0.0f, j,0,1,0 };
+//        vertices.emplace_back(leftVert);
+//        vertices.emplace_back(rightVert);
+//        indices.emplace_back(currentIndex);
+//        indices.emplace_back(currentIndex + 1);
+//        currentIndex += 2;
+//    }
+
+    for(float i=LEFT_END_POINT;i<=RIGHT_END_POINT;i+=GRID_SPACING_WIDTH){
+        for(float j=BOTTOM_END_POINT;j<=TOP_END_POINT;j+=GRID_SPACING_LENGTH){
+            Vertex first = {i,0,j,0,1,0};
+            vertices.emplace_back(first);
+        }
     }
-    // draw vertical lines
-    for(GLfloat j = BOTTOM_END_POINT; j <= TOP_END_POINT; j += GRID_SPACING_LENGTH) {
-        Vertex leftVert = {LEFT_END_POINT, 0.0f, j ,0,1,0};
-        Vertex rightVert = {RIGHT_END_POINT, 0.0f, j,0,1,0 };
-        vertices.emplace_back(leftVert);
-        vertices.emplace_back(rightVert);
-        indices.emplace_back(currentIndex);
-        indices.emplace_back(currentIndex + 1);
-        currentIndex += 2;
+    for(float i=LEFT_END_POINT;i<=RIGHT_END_POINT;i+=GRID_SPACING_WIDTH){
+        for(float j=BOTTOM_END_POINT;j<=TOP_END_POINT;j+=GRID_SPACING_LENGTH){
+            Vertex first = {i,0,j,0,1,0};
+            vertices.emplace_back(first);
+        }
+    }
+    int numCols = (RIGHT_END_POINT-LEFT_END_POINT)/GRID_SPACING_WIDTH +1;
+    int numRows = (TOP_END_POINT-BOTTOM_END_POINT)/GRID_SPACING_LENGTH+1;
+
+    for(int i=0;i<numCols;i++){
+        for(int j=0;j<numRows ;j++){
+            indices.emplace_back(i*numCols+j);
+        }
+    }
+    for(int i=0;i<numCols;i++){
+        for(int j=0;j<numRows;j++){
+            indices.emplace_back(j*numCols+i);
+        }
     }
 
 
@@ -281,32 +317,51 @@ void mpEngine::_generateEnvironment() {
     setBottomEdge(BOTTOM_END_POINT);
     //******************************************************************
 
-    srand( time(0) );                                                   // seed our RNG
+    srand( time(0) );// seed our RNG
 
+    glm::vec3 color(0.5f, 0.4f, 0.4f);
+    glm::vec3 mushColor(1.0f, 0.4f, 0.4f);
     // psych! everything's on a grid.
     // lava rock color
-    glm::vec3 color( 0.5f, 0.4f, 0.4f );
-    for(int i = LEFT_END_POINT; i < RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
-        for(int j = BOTTOM_END_POINT; j < TOP_END_POINT; j += GRID_SPACING_LENGTH) {
-            // don't just draw a building ANYWHERE.
-            if( i % 2 && j % 2 && getRand() < 0.2f ) {
-                // translate to spot
-                glm::mat4 transToSpotMtx = glm::translate( glm::mat4(1.0), glm::vec3(i, 0.0f, j) );
+    for (int i = LEFT_END_POINT; i < RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
+        for (int j = BOTTOM_END_POINT; j < TOP_END_POINT; j += GRID_SPACING_LENGTH) {
+            // Determine if a building should be placed
+            bool placeBuilding = i % 2 && j % 2 && getRand() < 0.2f;
 
-                // compute random height
-                GLdouble height = powf(getRand(), 2.5)*3 + 1;
-                // scale to building size
-                glm::mat4 scaleToHeightMtx = glm::scale( glm::mat4(1.0), glm::vec3(1, height, 1) );
+            // Translate to the spot (for both building and mushroom)
+            glm::mat4 transToSpotMtx = glm::translate(glm::mat4(1.0), glm::vec3(i, 0.0f, j));
 
-                // translate up to grid
-                glm::mat4 transToHeight = glm::translate( glm::mat4(1.0), glm::vec3(0, height/2.0f, 0) );
+            if (placeBuilding) {
+                // Compute random height for building
+                GLdouble height = powf(getRand(), 2.5) * 3 + 1;
 
-                // compute full model matrix
+                // Scale to building size
+                glm::mat4 scaleToHeightMtx = glm::scale(glm::mat4(1.0), glm::vec3(1, height, 1));
+
+                // Translate up to grid
+                glm::mat4 transToHeight = glm::translate(glm::mat4(1.0), glm::vec3(0, height / 2.0f, 0));
+
+                // Compute full model matrix for building
                 glm::mat4 modelMatrix = transToHeight * scaleToHeightMtx * transToSpotMtx;
 
-                // store building properties
+                // Store building properties
                 BuildingData currentBuilding = {modelMatrix, color};
-                _buildings.emplace_back( currentBuilding );
+                _buildings.emplace_back(currentBuilding);
+            } if (i % 2 && j % 2 && getRand() < 0.05f)  { //Adjust the value to the right of the < sign for more or less mushrooms
+                // For mushrooms, generate a random position within the grid cell
+                // For mushrooms, generate a random position within the grid cell
+                float mushPosX = i + (getRand() * (GRID_SPACING_WIDTH - 0.2f)) + 0.1f;
+                float mushPosZ = j + (getRand() * (GRID_SPACING_LENGTH - 0.2f)) + 0.1f;
+
+                // Translate to the mushroom's random position
+                glm::mat4 transToMushroomSpotMtx = glm::translate(glm::mat4(1.0), glm::vec3(mushPosX, 0.0f, mushPosZ));
+
+                // Compute full model matrix for mushroom
+                glm::mat4 modelMatrixMushroom = transToMushroomSpotMtx;
+
+                // Store mushroom properties
+                MushroomData currentMushroomData = {modelMatrixMushroom, mushColor};
+                _mushrooms.emplace_back(currentMushroomData);
             }
         }
     }
@@ -332,6 +387,7 @@ void mpEngine::mSetupScene() {
 
     // set lighting uniforms
     glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
+
     glProgramUniform3fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.lightDirection,
@@ -345,6 +401,38 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
             );
+    glm::vec3 pLightPos = {0,2,0};
+    glProgramUniform3fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightPos,
+            1,
+            &pLightPos[0]
+    );
+    glProgramUniform3fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightColor,
+            1,
+            &lightColor[0]
+    );
+    float lin=0;float quad=.05;float exp=0;
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightAttenLin,
+            1,
+            &lin
+    );
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightAttenQuad,
+            1,
+            &quad
+    );
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.pLightAttenExp,
+            1,
+            &exp
+    );
 }
 
 
@@ -381,7 +469,6 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     //// BEGIN DRAWING THE GROUND PLANE ////
     glm::mat4 groundModelMtx = glm::mat4(1);
     _computeAndSendMatrixUniforms(groundModelMtx, viewMtx, projMtx);
-
     glm::vec3 groundColor(1.0f,1.0f,1.0f);
     _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, groundColor);
 
@@ -398,6 +485,25 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
         CSCI441::drawSolidCube(1.0);
     }
     //// END DRAWING THE BUILDINGS ////
+
+    for( const MushroomData& currentMushroomData : _mushrooms ) {
+        _computeAndSendMatrixUniforms(currentMushroomData.modelMatrix, viewMtx, projMtx);
+
+        _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, currentMushroomData.color);
+
+        CSCI441::drawSolidCone(1.0, 2.0, 3, 3);
+    }
+
+    for( const MushroomData& currentMushroomData : _mushrooms ) {
+
+//        CSCI441::drawSolidSphere(1.0, 12, 12);
+        // Get the existing model matrix and move the sphere up
+        glm::mat4 translatedModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 2.5f, 0.0f)) * currentMushroomData.modelMatrix;
+
+        _computeAndSendMatrixUniforms(translatedModelMatrix, viewMtx, projMtx);
+        _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, currentMushroomData.color);
+        CSCI441::drawSolidSphere(1.0, 12, 12);
+    }
 
     //// BEGIN DRAWING THE SKIFF ////
     glm::mat4 modelMtx(1.0f);
@@ -474,7 +580,6 @@ void mpEngine::_updateScene() {
         glm::vec3 currPos = pFreeCam->getPosition();
 
         if(_keys[GLFW_KEY_I]){
-            std::cout << "HERERE" << std::endl;
             currPhi += _cameraSpeed.y;
         }
         if(_keys[GLFW_KEY_K]){
@@ -547,6 +652,7 @@ void mpEngine::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewM
     glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
     // then send it to the shader on the GPU to apply to every vertex
     _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.mvpMatrix, mvpMtx);
+    _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.modelMtx, modelMtx);
 
     // compute and send the normal matrix
     glm::mat3 normalMtx = glm::mat3(glm::transpose(glm::inverse(modelMtx)));

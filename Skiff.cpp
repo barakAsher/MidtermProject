@@ -5,7 +5,7 @@
 #include <CSCI441/objects.hpp>
 #include <CSCI441/OpenGLUtils.hpp>
 
-Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation ) {
+Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint modelUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation) {
 
     _propAngle = 0.0f;
     _propAngleRotationSpeed = _PI / 16.0f;
@@ -14,6 +14,7 @@ Skiff::Skiff(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint norm
     _shaderProgramUniformLocations.mvpMtx           = mvpMtxUniformLocation;
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor    = materialColorUniformLocation;
+    _shaderProgramUniformLocations.modelMtx        = modelUniformLocation;
 
 
     _colorBody = glm::vec3( 0.6f, 0.6f, 0.6f );

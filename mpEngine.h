@@ -124,8 +124,17 @@ private:
         /// \desc color to draw the building
         glm::vec3 color;
     };
+
+    struct MushroomData {
+        /// \desc transformations to position and size the building
+        glm::mat4 modelMatrix;
+        /// \desc color to draw the building
+        glm::vec3 color;
+    };
     /// \desc information list of all the buildings to draw
     std::vector<BuildingData> _buildings;
+    std::vector<MushroomData> _mushrooms;
+
 
     /// \desc generates building information to make up our scene
     void _generateEnvironment();
@@ -136,11 +145,17 @@ private:
     struct LightingShaderUniformLocations {
         /// \desc precomputed MVP matrix location
         GLint mvpMatrix;
+        GLint modelMtx;
         /// \desc material diffuse color location
         GLint materialColor;
         GLint lightColor;
         GLint lightDirection;
         GLint normalMatrix;
+        GLint pLightPos;
+        GLint pLightColor;
+        GLint pLightAttenLin;
+        GLint pLightAttenQuad;
+        GLint pLightAttenExp;
 
     } _lightingShaderUniformLocations;
     /// \desc stores the locations of all of our shader attributes
