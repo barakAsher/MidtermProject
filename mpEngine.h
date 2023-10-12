@@ -124,8 +124,17 @@ private:
         /// \desc color to draw the building
         glm::vec3 color;
     };
+
+    struct MushroomData {
+        /// \desc transformations to position and size the building
+        glm::mat4 modelMatrix;
+        /// \desc color to draw the building
+        glm::vec3 color;
+    };
     /// \desc information list of all the buildings to draw
     std::vector<BuildingData> _buildings;
+    std::vector<MushroomData> _mushrooms;
+
 
     /// \desc generates building information to make up our scene
     void _generateEnvironment();
