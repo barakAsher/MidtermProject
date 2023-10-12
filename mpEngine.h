@@ -157,6 +157,8 @@ private:
         GLint pLightAttenQuad;
         GLint pLightAttenExp;
         GLint lookAtDir;
+        GLint lightType;
+        GLint alpha;
 
     } _lightingShaderUniformLocations;
     /// \desc stores the locations of all of our shader attributes
@@ -166,6 +168,9 @@ private:
         GLint vNormal;
 
     } _lightingShaderAttributeLocations;
+
+    GLint _lightType;
+    float _alpha;
 
     /// \desc precomputes the matrix uniforms CPU-side and then sends them
     /// to the GPU to be used in the shader for each vertex.  It is more efficient

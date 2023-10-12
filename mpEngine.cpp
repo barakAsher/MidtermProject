@@ -161,7 +161,8 @@ void mpEngine::mSetupShaders() {
     _lightingShaderUniformLocations.pLightAttenQuad =     _lightingShaderProgram->getUniformLocation("pointLight.atten.quad");
     _lightingShaderUniformLocations.pLightAttenExp =     _lightingShaderProgram->getUniformLocation("pointLight.atten.exp");
     _lightingShaderUniformLocations.lookAtDir    = _lightingShaderProgram->getUniformLocation("lookAtDir");
-
+    _lightingShaderUniformLocations.lightType   = _lightingShaderProgram->getUniformLocation("lightType");
+    _lightingShaderUniformLocations.alpha   = _lightingShaderProgram->getUniformLocation("alpha");
     // assign attributes
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
     _lightingShaderAttributeLocations.vNormal      = _lightingShaderProgram->getAttributeLocation(("vNormal"));
@@ -389,6 +390,16 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
+    _alpha = 4.0;
+    _lightType = 1;
+
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.alpha,
+            1,
+            &_alpha
+            );
+
     // set lighting uniforms
     glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
 
@@ -478,6 +489,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     }
 
     glProgramUniform3fv(_lightingShaderProgram -> getShaderProgramHandle(), _lightingShaderUniformLocations.lookAtDir, 1, &lookAtDir[0]);
+    glProgramUniform1iv(_lightingShaderProgram -> getShaderProgramHandle(), _lightingShaderUniformLocations.lightType, 1, &_lightType);
 
     //// BEGIN DRAWING THE GROUND PLANE ////
     glm::mat4 groundModelMtx = glm::mat4(1);

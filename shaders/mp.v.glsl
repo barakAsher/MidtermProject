@@ -23,9 +23,9 @@ uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
 uniform vec3 materialColor;             // the material color for our vertex (& whole object)
 uniform vec3 lightColor;
-uniform vec3 lightDirection;
 uniform vec3 lookAtDir;
-float alpha = 0.1;
+uniform int lightType;
+uniform float alpha;
 
 // attribute inputs
 layout(location = 0) in vec3 vPos;      // the position of this specific vertex in object space
@@ -40,30 +40,43 @@ void main() {
 
     // compute Light vector
     //vec3 lightDirectionReversed = -1 * lightDirection;
-    vec3 lightDirectionReversed = normalize(-lightDirection);
+//    vec3 lightDirectionReversed = normalize(-lightDirection);
     // transform normal vector
+
     vec3 normalTransformed = normalMatrix * vNormal;
-    vec4 rand = modelMtx*vec4(vPos,1);
-    vec4 lightDirection = vec4(pointLight.pos,1)-rand;
-    float distance = length(lightDirection);
-    lightDirection = normalize(lightDirection);
-//    vec3 lightDirection = normalize(-dirLight.direction);
-    // perform diffuse calculation
 
-    vec3 ambient = pointLight.color*.1*materialColor;
-    vec3 diffuse = pointLight.color*materialColor*max(dot(lightDirection,vec4(normalTransformed,1)),0);
-//    vec3 reflect = normalize(reflect(lightDirection,vNormal));
-//    vec3 specular = pointLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
+    if(lightType == 0){
+        vec4 rand = modelMtx*vec4(vPos,1);
+        vec4 lightDirection = vec4(pointLight.pos,1)-rand;
+        float distance = length(lightDirection);
+        lightDirection = normalize(lightDirection);
+        //    vec3 lightDirection = normalize(-dirLight.direction);
+        // perform diffuse calculation
+
+        vec3 ambient = pointLight.color*.1*materialColor;
+        vec3 diffuse = pointLight.color*materialColor*max(dot(lightDirection,vec4(normalTransformed,1)),0);
+        vec4 reflectanceVec = lightDirection + 2 *(dot(-lightDirection,vec4(normalTransformed,1)))*vec4(normalTransformed,1);
+        //    vec3 reflect = normalize(reflect(lightDirection,vNormal));
+        //    vec3 specular = pointLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
 
 
-    // assign the color for this vertex
-//    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
-    float attenuation  = pointLight.atten.lin + pointLight.atten.quad * distance + pointLight.atten.exp*distance*distance;
-    vec3 reflectanceVec = lightDirectionReversed + 2 *(dot(normalTransformed,-lightDirectionReversed))*normalTransformed;
-    vec3 reflectance = lightColor * materialColor * max(dot(lookAtDir, reflectanceVec), 0.0);
+        // assign the color for this vertex
+        //    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
+        float attenuation  = pointLight.atten.lin + pointLight.atten.quad * distance + pointLight.atten.exp*distance*distance;
+        //    vec3 reflectanceVec = lightDirectionReversed + 2 *(dot(normalTransformed,-lightDirectionReversed))*normalTransformed;
+        vec3 reflectance = lightColor * materialColor * pow(max(dot(vec4(lookAtDir,1), reflectanceVec), 0),alpha);
 
-    color = diffuse + ambient + reflectance;
-    color = color/attenuation;
+        color = diffuse + ambient + reflectance;
+        color = color/attenuation;
+    }else if(lightType == 1){
+        vec3 lightDirection = normalize(-dirLight.direction);
+        vec3 diffuse = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0));
+
+        vec3 reflectanceVec = lightDirection + 2 *dot(-lightDirection,normalTransformed)*normalTransformed;
+        vec3 reflectance = lightColor * materialColor * pow(max(dot(lookAtDir, reflectanceVec), 0),alpha);
+
+        color = diffuse + reflectance;
+    }
 
     // assign the color for this vertex
     //color = lightColor * materialColor * diffuse;
