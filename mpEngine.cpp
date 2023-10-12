@@ -151,8 +151,8 @@ void mpEngine::mSetupShaders() {
     // assign uniforms
     _lightingShaderUniformLocations.mvpMatrix      = _lightingShaderProgram->getUniformLocation("mvpMatrix");
     _lightingShaderUniformLocations.materialColor  = _lightingShaderProgram->getUniformLocation("materialColor");
-    _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("lightColor");
-    _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("lightDirection");
+    _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("dirLight.color");
+    _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("dirLight.direction");
     _lightingShaderUniformLocations.normalMatrix   = _lightingShaderProgram->getUniformLocation("normalMatrix");
 
     // assign attributes
