@@ -20,7 +20,7 @@ uniform mat4 mvpMatrix;                 // the precomputed Model-View-Projection
 uniform mat4 modelMtx;
 uniform mat3 normalMatrix;
 uniform DirectionalLight dirLight;
-uniform PointLight pointLight;
+uniform PointLight pointLights[1];
 uniform vec3 materialColor;             // the material color for our vertex (& whole object)
 uniform vec3 lightColor;
 uniform vec3 lightDirection;
@@ -40,27 +40,29 @@ void main() {
 
     // compute Light vector
     //vec3 lightDirectionReversed = -1 * lightDirection;
-    vec3 lightDirectionReversed = normalize(-lightDirection);
+//    vec3 lightDirectionReversed = normalize(-lightDirection);
     // transform normal vector
     vec3 normalTransformed = normalMatrix * vNormal;
-    vec4 rand = modelMtx*vec4(vPos,1);
-    vec4 lightDirection = vec4(pointLight.pos,1)-rand;
+    vec4 vertexTransformed = modelMtx*vec4(vPos,1);
+    vec4 lightDirection = vec4(pointLights[0].pos,1)-vertexTransformed;
     float distance = length(lightDirection);
     lightDirection = normalize(lightDirection);
 //    vec3 lightDirection = normalize(-dirLight.direction);
     // perform diffuse calculation
 
-    vec3 ambient = pointLight.color*.1*materialColor;
-    vec3 diffuse = pointLight.color*materialColor*max(dot(lightDirection,vec4(normalTransformed,1)),0);
+    vec3 ambient = pointLights[0].color*.1*materialColor;
+    vec3 diffuse = pointLights[0].color*materialColor*max(dot(lightDirection,vec4(normalTransformed,1)),0);
 //    vec3 reflect = normalize(reflect(lightDirection,vNormal));
 //    vec3 specular = pointLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
 
 
     // assign the color for this vertex
 //    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
-    float attenuation  = pointLight.atten.lin + pointLight.atten.quad * distance + pointLight.atten.exp*distance*distance;
-    vec3 reflectanceVec = lightDirectionReversed + 2 *(dot(normalTransformed,-lightDirectionReversed))*normalTransformed;
-    vec3 reflectance = lightColor * materialColor * max(dot(lookAtDir, reflectanceVec), 0.0);
+    float attenuation  = pointLights[0].atten.lin + pointLights[0].atten.quad * distance + pointLights[0].atten.exp*distance*distance;
+
+
+    vec4 reflectanceVec = lightDirection + 2 *(dot(vec4(normalTransformed,1),-lightDirection))*vec4(normalTransformed,1);
+    vec3 reflectance = lightColor * materialColor * max(dot(vec4(lookAtDir,1), reflectanceVec), 0.0);
 
     color = diffuse + ambient + reflectance;
     color = color/attenuation;

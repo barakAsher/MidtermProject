@@ -148,17 +148,45 @@ private:
         GLint modelMtx;
         /// \desc material diffuse color location
         GLint materialColor;
-        GLint lightColor;
-        GLint lightDirection;
         GLint normalMatrix;
-        GLint pLightPos;
-        GLint pLightColor;
-        GLint pLightAttenLin;
-        GLint pLightAttenQuad;
-        GLint pLightAttenExp;
         GLint lookAtDir;
 
     } _lightingShaderUniformLocations;
+
+    struct DirectionalLight{
+        glm::vec3 direction;
+        glm::vec3 color;
+    };
+    struct PointLight{
+        glm::vec3 position;
+        glm::vec3 color;
+        GLfloat linAtten;
+        GLfloat quadAtten;
+        GLfloat expAtten;
+    };
+    struct SpotLight{
+        glm::vec3 position;
+        glm::vec3 direction;
+        glm::vec3 color;
+    };
+
+    std::vector<DirectionalLight> _dirLights;
+    std::vector<PointLight> _pointLights;
+    std::vector<SpotLight> _spotLights;
+
+    struct DirectionalLightUniformLocations{
+        std::vector<GLint> directionLocs;
+        std::vector<GLint> colorLocs;
+
+    } _dirLightUniformLocations;
+    struct PointLightUniformLocations{
+        std::vector<GLint> positionLocs;
+        std::vector<GLint> colorLocs;
+        std::vector<GLint> linearAttenLocs;
+        std::vector<GLint> quadAttenLocs;
+        std::vector<GLint> expAttenLocs;
+    } _pointLightUniformLocations;
+
     /// \desc stores the locations of all of our shader attributes
     struct LightingShaderAttributeLocations {
         /// \desc vertex position location

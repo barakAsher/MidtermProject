@@ -152,19 +152,26 @@ void mpEngine::mSetupShaders() {
     _lightingShaderUniformLocations.mvpMatrix      = _lightingShaderProgram->getUniformLocation("mvpMatrix");
     _lightingShaderUniformLocations.modelMtx      = _lightingShaderProgram->getUniformLocation("modelMtx");
     _lightingShaderUniformLocations.materialColor  = _lightingShaderProgram->getUniformLocation("materialColor");
-    _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("dirLight.color");
-    _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("dirLight.direction");
     _lightingShaderUniformLocations.normalMatrix   = _lightingShaderProgram->getUniformLocation("normalMatrix");
-    _lightingShaderUniformLocations.pLightColor     = _lightingShaderProgram->getUniformLocation("pointLight.color");
-    _lightingShaderUniformLocations.pLightPos =     _lightingShaderProgram->getUniformLocation("pointLight.pos");
-    _lightingShaderUniformLocations.pLightAttenLin =     _lightingShaderProgram->getUniformLocation("pointLight.atten.lin");
-    _lightingShaderUniformLocations.pLightAttenQuad =     _lightingShaderProgram->getUniformLocation("pointLight.atten.quad");
-    _lightingShaderUniformLocations.pLightAttenExp =     _lightingShaderProgram->getUniformLocation("pointLight.atten.exp");
     _lightingShaderUniformLocations.lookAtDir    = _lightingShaderProgram->getUniformLocation("lookAtDir");
 
     // assign attributes
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
     _lightingShaderAttributeLocations.vNormal      = _lightingShaderProgram->getAttributeLocation(("vNormal"));
+
+    //need to set pointlight size here
+    for(int i=0;i<1;i++){
+        std::string test = "pointLights["+std::to_string(i)+"].pos";
+        _pointLightUniformLocations.positionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "pointLights["+std::to_string(i)+"].color";
+        _pointLightUniformLocations.colorLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "pointLights["+std::to_string(i)+"].atten.lin";
+        _pointLightUniformLocations.linearAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "pointLights["+std::to_string(i)+"].atten.quad";
+        _pointLightUniformLocations.quadAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "pointLights["+std::to_string(i)+"].atten.exp";
+        _pointLightUniformLocations.expAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+    }
 
 }
 
@@ -392,51 +399,42 @@ void mpEngine::mSetupScene() {
     // set lighting uniforms
     glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
 
-    glProgramUniform3fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.lightDirection,
-            1,
-            &lightDirection[0]
-            );
-    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-    glProgramUniform3fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.lightColor,
-            1,
-            &lightColor[0]
-            );
-    glm::vec3 pLightPos = {0,2,0};
-    glProgramUniform3fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.pLightPos,
-            1,
-            &pLightPos[0]
-    );
-    glProgramUniform3fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.pLightColor,
-            1,
-            &lightColor[0]
-    );
-    float lin=0;float quad=.05;float exp=0;
-    glProgramUniform1fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.pLightAttenLin,
-            1,
-            &lin
-    );
-    glProgramUniform1fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.pLightAttenQuad,
-            1,
-            &quad
-    );
-    glProgramUniform1fv(
-            _lightingShaderProgram->getShaderProgramHandle(),
-            _lightingShaderUniformLocations.pLightAttenExp,
-            1,
-            &exp
-    );
+    PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
+    _pointLights.emplace_back(firstPoint);
+
+    for(int i=0;i<_pointLights.size();i++) {
+
+        glProgramUniform3fv(
+                _lightingShaderProgram->getShaderProgramHandle(),
+                _pointLightUniformLocations.positionLocs[i],
+                1,
+                &_pointLights[i].position[0]
+        );
+        glProgramUniform3fv(
+                _lightingShaderProgram->getShaderProgramHandle(),
+                _pointLightUniformLocations.colorLocs[i],
+                1,
+                &_pointLights[i].color[0]
+        );
+        glProgramUniform1fv(
+                _lightingShaderProgram->getShaderProgramHandle(),
+                _pointLightUniformLocations.linearAttenLocs[i],
+                1,
+                &_pointLights[i].linAtten
+        );
+        glProgramUniform1fv(
+                _lightingShaderProgram->getShaderProgramHandle(),
+                _pointLightUniformLocations.quadAttenLocs[i],
+                1,
+                &_pointLights[i].quadAtten
+        );
+        glProgramUniform1fv(
+                _lightingShaderProgram->getShaderProgramHandle(),
+                _pointLightUniformLocations.expAttenLocs[i],
+                1,
+                &_pointLights[i].expAtten
+        );
+    }
 }
 
 
