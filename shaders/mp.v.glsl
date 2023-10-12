@@ -22,6 +22,10 @@ uniform mat3 normalMatrix;
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
 uniform vec3 materialColor;             // the material color for our vertex (& whole object)
+uniform vec3 lightColor;
+uniform vec3 lightDirection;
+uniform vec3 lookAtDir;
+float alpha = 0.1;
 
 // attribute inputs
 layout(location = 0) in vec3 vPos;      // the position of this specific vertex in object space
@@ -35,6 +39,8 @@ void main() {
     gl_Position = mvpMatrix * vec4(vPos, 1.0);
 
     // compute Light vector
+    //vec3 lightDirectionReversed = -1 * lightDirection;
+    vec3 lightDirectionReversed = normalize(-lightDirection);
     // transform normal vector
     vec3 normalTransformed = normalMatrix * vNormal;
     vec4 rand = modelMtx*vec4(vPos,1);
@@ -53,6 +59,12 @@ void main() {
     // assign the color for this vertex
 //    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
     float attenuation  = pointLight.atten.lin + pointLight.atten.quad * distance + pointLight.atten.exp*distance*distance;
-    color = diffuse + ambient;
+    vec3 reflectanceVec = lightDirectionReversed + 2 *(dot(normalTransformed,-lightDirectionReversed))*normalTransformed;
+    vec3 reflectance = lightColor * materialColor * max(dot(lookAtDir, reflectanceVec), 0.0);
+
+    color = diffuse + ambient + reflectance;
     color = color/attenuation;
+
+    // assign the color for this vertex
+    //color = lightColor * materialColor * diffuse;
 }

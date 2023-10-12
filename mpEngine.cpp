@@ -160,6 +160,7 @@ void mpEngine::mSetupShaders() {
     _lightingShaderUniformLocations.pLightAttenLin =     _lightingShaderProgram->getUniformLocation("pointLight.atten.lin");
     _lightingShaderUniformLocations.pLightAttenQuad =     _lightingShaderProgram->getUniformLocation("pointLight.atten.quad");
     _lightingShaderUniformLocations.pLightAttenExp =     _lightingShaderProgram->getUniformLocation("pointLight.atten.exp");
+    _lightingShaderUniformLocations.lookAtDir    = _lightingShaderProgram->getUniformLocation("lookAtDir");
 
     // assign attributes
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
@@ -168,6 +169,9 @@ void mpEngine::mSetupShaders() {
 }
 
 void mpEngine::mSetupBuffers() {
+
+
+
     //  connect our 3D Object Library to our shader
     CSCI441::setVertexAttributeLocations( _lightingShaderAttributeLocations.vPos,_lightingShaderAttributeLocations.vNormal);
 
@@ -317,7 +321,7 @@ void mpEngine::_generateEnvironment() {
     setBottomEdge(BOTTOM_END_POINT);
     //******************************************************************
 
-    srand( time(0) );// seed our RNG
+    srand( glfwGetTime() );// seed our RNG
 
     glm::vec3 color(0.5f, 0.4f, 0.4f);
     glm::vec3 mushColor(1.0f, 0.4f, 0.4f);
@@ -465,6 +469,15 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
     // use our lighting shader program
     _lightingShaderProgram->useProgram();
+
+    glm::vec3 lookAtDir;
+    if(_currentCam == 1){
+        lookAtDir = glm::normalize(pArcballCam->getPosition() - pArcballCam->getLookAtPoint());
+    }else if(_currentCam == 2){
+        lookAtDir = glm::normalize(pFreeCam->getPosition() - pFreeCam->getLookAtPoint());
+    }
+
+    glProgramUniform3fv(_lightingShaderProgram -> getShaderProgramHandle(), _lightingShaderUniformLocations.lookAtDir, 1, &lookAtDir[0]);
 
     //// BEGIN DRAWING THE GROUND PLANE ////
     glm::mat4 groundModelMtx = glm::mat4(1);

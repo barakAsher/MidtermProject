@@ -156,6 +156,7 @@ private:
         GLint pLightAttenLin;
         GLint pLightAttenQuad;
         GLint pLightAttenExp;
+        GLint lookAtDir;
 
     } _lightingShaderUniformLocations;
     /// \desc stores the locations of all of our shader attributes
