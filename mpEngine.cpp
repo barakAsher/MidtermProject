@@ -230,24 +230,50 @@ void mpEngine::_createGroundBuffers() {
     std::vector<GLushort> indices;
     // draw horizontal lines
     GLushort currentIndex = 0;
-    for(GLfloat i = LEFT_END_POINT; i <= RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
-        Vertex bottomVert = {i, 0.0f, BOTTOM_END_POINT,0,1,0};
-        Vertex topVert = {i, 0.0f, TOP_END_POINT ,0,1,0};
-        vertices.emplace_back(bottomVert);
-        vertices.emplace_back(topVert);
-        indices.emplace_back(currentIndex);
-        indices.emplace_back(currentIndex + 1);
-        currentIndex += 2;
+//    for(GLfloat i = LEFT_END_POINT; i <= RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
+//        Vertex bottomVert = {i, 0.0f, BOTTOM_END_POINT,0,1,0};
+//        Vertex topVert = {i, 0.0f, TOP_END_POINT ,0,1,0};
+//        vertices.emplace_back(bottomVert);
+//        vertices.emplace_back(topVert);
+//        indices.emplace_back(currentIndex);
+//        indices.emplace_back(currentIndex + 1);
+//        currentIndex += 2;
+//    }
+//    // draw vertical lines
+//    for(GLfloat j = BOTTOM_END_POINT; j <= TOP_END_POINT; j += GRID_SPACING_LENGTH) {
+//        Vertex leftVert = {LEFT_END_POINT, 0.0f, j ,0,1,0};
+//        Vertex rightVert = {RIGHT_END_POINT, 0.0f, j,0,1,0 };
+//        vertices.emplace_back(leftVert);
+//        vertices.emplace_back(rightVert);
+//        indices.emplace_back(currentIndex);
+//        indices.emplace_back(currentIndex + 1);
+//        currentIndex += 2;
+//    }
+
+    for(float i=LEFT_END_POINT;i<=RIGHT_END_POINT;i+=GRID_SPACING_WIDTH){
+        for(float j=BOTTOM_END_POINT;j<=TOP_END_POINT;j+=GRID_SPACING_LENGTH){
+            Vertex first = {i,0,j,0,1,0};
+            vertices.emplace_back(first);
+        }
     }
-    // draw vertical lines
-    for(GLfloat j = BOTTOM_END_POINT; j <= TOP_END_POINT; j += GRID_SPACING_LENGTH) {
-        Vertex leftVert = {LEFT_END_POINT, 0.0f, j ,0,1,0};
-        Vertex rightVert = {RIGHT_END_POINT, 0.0f, j,0,1,0 };
-        vertices.emplace_back(leftVert);
-        vertices.emplace_back(rightVert);
-        indices.emplace_back(currentIndex);
-        indices.emplace_back(currentIndex + 1);
-        currentIndex += 2;
+    for(float i=LEFT_END_POINT;i<=RIGHT_END_POINT;i+=GRID_SPACING_WIDTH){
+        for(float j=BOTTOM_END_POINT;j<=TOP_END_POINT;j+=GRID_SPACING_LENGTH){
+            Vertex first = {i,0,j,0,1,0};
+            vertices.emplace_back(first);
+        }
+    }
+    int numCols = (RIGHT_END_POINT-LEFT_END_POINT)/GRID_SPACING_WIDTH +1;
+    int numRows = (TOP_END_POINT-BOTTOM_END_POINT)/GRID_SPACING_LENGTH+1;
+
+    for(int i=0;i<numCols;i++){
+        for(int j=0;j<numRows ;j++){
+            indices.emplace_back(i*numCols+j);
+        }
+    }
+    for(int i=0;i<numCols;i++){
+        for(int j=0;j<numRows;j++){
+            indices.emplace_back(j*numCols+i);
+        }
     }
 
 
@@ -356,7 +382,7 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
             );
-    glm::vec3 pLightPos = {0,1,0};
+    glm::vec3 pLightPos = {0,2,0};
     glProgramUniform3fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.pLightPos,
@@ -369,7 +395,7 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
     );
-    float lin=0;float quad=.2;float exp=0;
+    float lin=0;float quad=.05;float exp=0;
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.pLightAttenLin,
@@ -516,7 +542,6 @@ void mpEngine::_updateScene() {
         glm::vec3 currPos = pFreeCam->getPosition();
 
         if(_keys[GLFW_KEY_I]){
-            std::cout << "HERERE" << std::endl;
             currPhi += _cameraSpeed.y;
         }
         if(_keys[GLFW_KEY_K]){
