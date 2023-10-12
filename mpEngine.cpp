@@ -150,6 +150,7 @@ void mpEngine::mSetupShaders() {
 
     // assign uniforms
     _lightingShaderUniformLocations.mvpMatrix      = _lightingShaderProgram->getUniformLocation("mvpMatrix");
+    _lightingShaderUniformLocations.modelMtx      = _lightingShaderProgram->getUniformLocation("modelMtx");
     _lightingShaderUniformLocations.materialColor  = _lightingShaderProgram->getUniformLocation("materialColor");
     _lightingShaderUniformLocations.lightColor     = _lightingShaderProgram->getUniformLocation("dirLight.color");
     _lightingShaderUniformLocations.lightDirection = _lightingShaderProgram->getUniformLocation("dirLight.direction");
@@ -338,7 +339,6 @@ void mpEngine::mSetupScene() {
     // set lighting uniforms
     glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
 
-    glm::vec3 pLightPos = {10,100,10};
     glProgramUniform3fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.lightDirection,
@@ -352,6 +352,7 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
             );
+    glm::vec3 pLightPos = {0,100,0};
     glProgramUniform3fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.pLightPos,
@@ -364,7 +365,7 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
     );
-    float lin=0;float quad=5;float exp=0;
+    float lin=2;float quad=0;float exp=0;
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.pLightAttenLin,
@@ -585,6 +586,7 @@ void mpEngine::_computeAndSendMatrixUniforms(glm::mat4 modelMtx, glm::mat4 viewM
     glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
     // then send it to the shader on the GPU to apply to every vertex
     _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.mvpMatrix, mvpMtx);
+    _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.modelMtx, modelMtx);
 
     // compute and send the normal matrix
     glm::mat3 normalMtx = glm::mat3(glm::transpose(glm::inverse(modelMtx)));

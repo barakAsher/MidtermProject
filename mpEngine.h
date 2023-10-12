@@ -136,6 +136,7 @@ private:
     struct LightingShaderUniformLocations {
         /// \desc precomputed MVP matrix location
         GLint mvpMatrix;
+        GLint modelMtx;
         /// \desc material diffuse color location
         GLint materialColor;
         GLint lightColor;

@@ -17,6 +17,7 @@ struct PointLight{
 
 // uniform inputs
 uniform mat4 mvpMatrix;                 // the precomputed Model-View-Projection Matrix
+uniform mat4 modelMtx;
 uniform mat3 normalMatrix;
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
@@ -36,17 +37,22 @@ void main() {
     // compute Light vector
     // transform normal vector
     vec3 normalTransformed = normalMatrix * vNormal;
-
-    vec3 lightDirection = dirLight.direction;
+    vec4 rand = modelMtx*vec4(vPos,1);
+    vec4 lightDirection = vec4(pointLight.pos,1)-rand;
     float distance = length(lightDirection);
     lightDirection = normalize(lightDirection);
 //    vec3 lightDirection = normalize(-dirLight.direction);
-
     // perform diffuse calculation
-    float diffuse = max(dot(normalTransformed, lightDirection), 0.0);
+
+    vec3 ambient = pointLight.color*.1*materialColor;
+    vec3 diffuse = pointLight.color*materialColor*max(dot(lightDirection,vec4(normalTransformed,1)),0);
+//    vec3 reflect = normalize(reflect(lightDirection,vNormal));
+//    vec3 specular = pointLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
 
 
     // assign the color for this vertex
-    //color = lightColor * materialColor * diffuse;
-    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
+//    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
+    float attenuation  = pointLight.atten.lin + pointLight.atten.quad * distance + pointLight.atten.exp*distance*distance;
+    color = diffuse;
+    color = color/attenuation;
 }
