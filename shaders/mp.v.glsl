@@ -53,6 +53,6 @@ void main() {
     // assign the color for this vertex
 //    color = dirLight.color * materialColor * (max(dot(normalTransformed, lightDirection), 0.0));
     float attenuation  = pointLight.atten.lin + pointLight.atten.quad * distance + pointLight.atten.exp*distance*distance;
-    color = diffuse;
+    color = diffuse + ambient;
     color = color/attenuation;
 }

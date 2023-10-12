@@ -14,7 +14,7 @@ public:
     /// \param mvpMtxUniformLocation uniform location for the full precomputed MVP matrix
     /// \param normalMtxUniformLocation uniform location for the precomputed Normal matrix
     /// \param materialColorUniformLocation uniform location for the material diffuse color
-    Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation);
+    Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint modelUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation);
     void drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) override;
 
 private:

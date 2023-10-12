@@ -5,7 +5,7 @@
 #include <CSCI441/objects.hpp>
 #include <CSCI441/OpenGLUtils.hpp>
 
-Gengiben::Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation ) {
+Gengiben::Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint modelUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation) {
 
     mWobbleAmount = 0.0f;
 
@@ -13,6 +13,7 @@ Gengiben::Gengiben(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLin
     _shaderProgramUniformLocations.mvpMtx           = mvpMtxUniformLocation;
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor        = materialColorUniformLocation;
+    _shaderProgramUniformLocations.modelMtx        = modelUniformLocation;
 
 }
 

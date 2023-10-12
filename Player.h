@@ -32,6 +32,7 @@ protected:
     struct ShaderProgramUniformLocations {
         /// \desc location of the precomputed ModelViewProjection matrix
         GLint mvpMtx;
+        GLint modelMtx;
         /// \desc location of the precomputed Normal matrix
         GLint normalMtx;
         /// \desc location of the material diffuse color
@@ -45,6 +46,7 @@ protected:
         glm::mat4 mvpMtx = projMtx * viewMtx * modelMtx;
         // then send it to the shader on the GPU to apply to every vertex
         glProgramUniformMatrix4fv( _shaderProgramHandle, _shaderProgramUniformLocations.mvpMtx, 1, GL_FALSE, &mvpMtx[0][0] );
+        glProgramUniformMatrix4fv( _shaderProgramHandle, _shaderProgramUniformLocations.modelMtx, 1, GL_FALSE, &modelMtx[0][0] );
         glm::mat3 normalMtx = glm::mat3( glm::transpose( glm::inverse( modelMtx )));
         glProgramUniformMatrix3fv( _shaderProgramHandle, _shaderProgramUniformLocations.normalMtx, 1, GL_FALSE, &normalMtx[0][0] );
     }

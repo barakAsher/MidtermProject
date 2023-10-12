@@ -15,7 +15,7 @@ public:
     /// \param mvpMtxUniformLocation uniform location for the full precomputed MVP matrix
     /// \param normalMtxUniformLocation uniform location for the precomputed Normal matrix
     /// \param materialColorUniformLocation uniform location for the material diffuse color
-    Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation );
+    Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint modelUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation);
 
     /// \desc draws the model plane for a given MVP matrix
     /// \param modelMtx existing model matrix to apply to plane

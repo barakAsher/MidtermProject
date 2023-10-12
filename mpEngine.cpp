@@ -174,30 +174,34 @@ void mpEngine::mSetupBuffers() {
     // give the skiff the normal matrix location
     Player* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
                         _lightingShaderUniformLocations.mvpMatrix,
+                        _lightingShaderUniformLocations.modelMtx,
                         _lightingShaderUniformLocations.normalMatrix,
                         _lightingShaderUniformLocations.materialColor);
     pSkiff->setPosition({0,0,0});
     _players.push_back(pSkiff);
 
     Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
-                            _lightingShaderUniformLocations.mvpMatrix,
-                            _lightingShaderUniformLocations.normalMatrix,
-                            _lightingShaderUniformLocations.materialColor);
+                                   _lightingShaderUniformLocations.mvpMatrix,
+                                   _lightingShaderUniformLocations.modelMtx,
+                                   _lightingShaderUniformLocations.normalMatrix,
+                                   _lightingShaderUniformLocations.materialColor);
 
     pVehicle->setPosition({1,0,0});
     _players.push_back((pVehicle));
 
     Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
-                        _lightingShaderUniformLocations.mvpMatrix,
-                        _lightingShaderUniformLocations.normalMatrix,
-                        _lightingShaderUniformLocations.materialColor);
+                                     _lightingShaderUniformLocations.mvpMatrix,
+                                     _lightingShaderUniformLocations.modelMtx,
+                                     _lightingShaderUniformLocations.normalMatrix,
+                                     _lightingShaderUniformLocations.materialColor);
     pStarlord->setPosition({2,0,0});
     _players.push_back(pStarlord);
 
     Player* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
-                                      _lightingShaderUniformLocations.mvpMatrix,
-                                      _lightingShaderUniformLocations.normalMatrix,
-                                      _lightingShaderUniformLocations.materialColor);
+                                     _lightingShaderUniformLocations.mvpMatrix,
+                                     _lightingShaderUniformLocations.modelMtx,
+                                     _lightingShaderUniformLocations.normalMatrix,
+                                     _lightingShaderUniformLocations.materialColor);
     pGengiben->setPosition({3,1,0});
     _players.push_back(pGengiben);
 
@@ -352,7 +356,7 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
             );
-    glm::vec3 pLightPos = {0,100,0};
+    glm::vec3 pLightPos = {0,1,0};
     glProgramUniform3fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.pLightPos,
@@ -365,7 +369,7 @@ void mpEngine::mSetupScene() {
             1,
             &lightColor[0]
     );
-    float lin=2;float quad=0;float exp=0;
+    float lin=0;float quad=.2;float exp=0;
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.pLightAttenLin,
@@ -420,7 +424,6 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     //// BEGIN DRAWING THE GROUND PLANE ////
     glm::mat4 groundModelMtx = glm::mat4(1);
     _computeAndSendMatrixUniforms(groundModelMtx, viewMtx, projMtx);
-
     glm::vec3 groundColor(1.0f,1.0f,1.0f);
     _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, groundColor);
 

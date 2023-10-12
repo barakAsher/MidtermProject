@@ -5,7 +5,7 @@
 #include <CSCI441/objects.hpp>
 #include <CSCI441/OpenGLUtils.hpp>
 
-Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation ) {
+Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint modelUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation) {
     _propAngle = 0.0f;
 
     _propAngleRotationSpeed = _PI / 16.0f;
@@ -14,6 +14,7 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint 
     _shaderProgramUniformLocations.mvpMtx           = mvpMtxUniformLocation;
     _shaderProgramUniformLocations.normalMtx        = normalMtxUniformLocation;
     _shaderProgramUniformLocations.materialColor    = materialColorUniformLocation;
+    _shaderProgramUniformLocations.modelMtx        = modelUniformLocation;
 
     _forwardDirection = glm::vec3(1.0f, 0.0f, 0.0f);
 
