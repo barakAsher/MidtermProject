@@ -49,10 +49,10 @@ vec3 calcPointLight(PointLight pLight, vec4 vPosTrans, vec4 vNormTrans){
     float distance = length(lightDirection);
     lightDirection = normalize(lightDirection);
 
-    vec3 ambient = pLight.color*.1*materialColor;
     vec3 diffuse = pLight.color*materialColor*max(dot(lightDirection,vNormTrans),0);
-    vec4 reflectanceVec = lightDirection + 2 *(dot(vNormTrans,-lightDirection))*vNormTrans;
-    vec3 reflectance = pLight.color * materialColor * max(dot(vec4(lookAtDir,1), reflectanceVec), 0.0);
+    vec3 ambient = diffuse;
+    vec4 reflectanceVec = lightDirection + 2 *dot(-lightDirection,vNormTrans)*vNormTrans;
+    vec3 reflectance = pLight.color * materialColor * pow(max(dot(vec4(lookAtDir,1), reflectanceVec), 0),alpha);
 
     float attenuation  = pLight.atten.lin + pLight.atten.quad * distance + pLight.atten.exp*distance*distance;
     vec3 color = diffuse + ambient + reflectance;
@@ -63,11 +63,12 @@ vec3 calcPointLight(PointLight pLight, vec4 vPosTrans, vec4 vNormTrans){
 vec3 calcDirLight(DirectionalLight dirLight, vec3 vNormTrans){
     vec3 lightDirection = normalize(-dirLight.direction);
     vec3 diffuse = dirLight.color * materialColor * (max(dot(vNormTrans, lightDirection), 0));
+    vec3 ambient = diffuse;
 
     vec3 reflectanceVec = lightDirection + 2 *dot(-lightDirection,vNormTrans)*vNormTrans;
     vec3 reflectance = dirLight.color * materialColor * pow(max(dot(lookAtDir, reflectanceVec), 0),alpha);
 
-    vec3 retColor = diffuse * dirLight.intensity;
+    vec3 retColor = (diffuse +ambient + reflectance)* dirLight.intensity;
     return retColor;
 }
 
@@ -86,8 +87,8 @@ vec3 calcSpotLight(SpotLight spotLight, vec4 vPosTrans, vec4 vNormTrans){
 
     vec3 ambient = spotLight.color*.1*materialColor;
     vec3 diffuse = spotLight.color*materialColor*max(dot(lightDirection,vNormTrans),0);
-    vec4 reflectanceVec = lightDirection + 2 *(dot(vNormTrans,-lightDirection))*vNormTrans;
-    vec3 reflectance = spotLight.color * materialColor * max(dot(vec4(lookAtDir,1), reflectanceVec), 0.0);
+    vec4 reflectanceVec = lightDirection + 2 *dot(-lightDirection,vNormTrans)*vNormTrans;
+    vec3 reflectance = spotLight.color * materialColor * pow(max(dot(vec4(lookAtDir,1), reflectanceVec), 0),alpha);
 
     float attenuation  = spotLight.atten.lin + spotLight.atten.quad * distance + spotLight.atten.exp*distance*distance;
     vec3 retColor = diffuse + ambient + reflectance;
@@ -100,7 +101,7 @@ void main() {
 
     // compute Light vector
     //vec3 lightDirectionReversed = -1 * lightDirection;
-//    vec3 lightDirectionReversed = normalize(-lightDirection);
+    //    vec3 lightDirectionReversed = normalize(-lightDirection);
     // transform normal vector
     vec3 normalTransformed = normalMatrix * vNormal;
     vec4 vertexTransformed = modelMtx*vec4(vPos,1);

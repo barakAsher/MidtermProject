@@ -150,13 +150,13 @@ void mpEngine::_setupLights(){
     _lightingShaderUniformLocations.numSpotLights = _lightingShaderProgram->getUniformLocation("numSpotLights");
     PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
     PointLight secondPoint{{30,2,30},{1,1,1},0,.2f,0};
-//    _pointLights.emplace_back(firstPoint);
+    _pointLights.emplace_back(firstPoint);
     _pointLights.emplace_back(secondPoint);
 
-    DirectionalLight firstDir{{-1,-1,-1},{1,1,1},.25};
+    DirectionalLight firstDir{{-1,-1,-1},{1,1,1},.2};
     _dirLights.emplace_back(firstDir);
 
-    SpotLight firstSpot{{0,10,0},{0,-1,0},{1,0,0},1, 0,.2,0};
+    SpotLight firstSpot{{0,10,0},{0,-1,0},{1,0,1},1, 0,.2,0};
     _spotLights.emplace_back(firstSpot);
 
     int numDirLights = _dirLights.size();
@@ -444,7 +444,14 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
-    _alpha = 0.001;
+    _alpha = .001f;
+
+    glProgramUniform1fv(
+            _lightingShaderProgram->getShaderProgramHandle(),
+            _lightingShaderUniformLocations.alpha,
+            1,
+            &_alpha
+    );
 
     for(int i=0;i<_pointLights.size();i++) {
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.positionLocs[i],1,&_pointLights[i].position[0]);
@@ -556,7 +563,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
         _computeAndSendMatrixUniforms(translatedModelMatrix, viewMtx, projMtx);
         _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, currentMushroomData.color);
-        CSCI441::drawSolidSphere(1.0, 12, 12);
+        CSCI441::drawSolidSphere(1.0, 10, 10);
     }
 
     //// BEGIN DRAWING THE SKIFF ////
