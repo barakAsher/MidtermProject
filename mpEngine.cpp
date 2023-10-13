@@ -229,36 +229,36 @@ void mpEngine::mSetupBuffers() {
     CSCI441::setVertexAttributeLocations( _lightingShaderAttributeLocations.vPos,_lightingShaderAttributeLocations.vNormal);
 
     // give the skiff the normal matrix location
-    Player* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
-                        _lightingShaderUniformLocations.mvpMatrix,
-                        _lightingShaderUniformLocations.modelMtx,
-                        _lightingShaderUniformLocations.normalMatrix,
-                        _lightingShaderUniformLocations.materialColor);
+    Character* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
+                                  _lightingShaderUniformLocations.mvpMatrix,
+                                  _lightingShaderUniformLocations.modelMtx,
+                                  _lightingShaderUniformLocations.normalMatrix,
+                                  _lightingShaderUniformLocations.materialColor);
     pSkiff->setPosition({0,0,0});
     _players.push_back(pSkiff);
 
-    Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
-                                   _lightingShaderUniformLocations.mvpMatrix,
-                                   _lightingShaderUniformLocations.modelMtx,
-                                   _lightingShaderUniformLocations.normalMatrix,
-                                   _lightingShaderUniformLocations.materialColor);
+    Character* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
+                                      _lightingShaderUniformLocations.mvpMatrix,
+                                      _lightingShaderUniformLocations.modelMtx,
+                                      _lightingShaderUniformLocations.normalMatrix,
+                                      _lightingShaderUniformLocations.materialColor);
 
     pVehicle->setPosition({1,0,0});
     _players.push_back((pVehicle));
 
-    Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
-                                     _lightingShaderUniformLocations.mvpMatrix,
-                                     _lightingShaderUniformLocations.modelMtx,
-                                     _lightingShaderUniformLocations.normalMatrix,
-                                     _lightingShaderUniformLocations.materialColor);
+    Character* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+                                        _lightingShaderUniformLocations.mvpMatrix,
+                                        _lightingShaderUniformLocations.modelMtx,
+                                        _lightingShaderUniformLocations.normalMatrix,
+                                        _lightingShaderUniformLocations.materialColor);
     pStarlord->setPosition({2,0,0});
     _players.push_back(pStarlord);
 
-    Player* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
-                                     _lightingShaderUniformLocations.mvpMatrix,
-                                     _lightingShaderUniformLocations.modelMtx,
-                                     _lightingShaderUniformLocations.normalMatrix,
-                                     _lightingShaderUniformLocations.materialColor);
+    Character* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
+                                        _lightingShaderUniformLocations.mvpMatrix,
+                                        _lightingShaderUniformLocations.modelMtx,
+                                        _lightingShaderUniformLocations.normalMatrix,
+                                        _lightingShaderUniformLocations.materialColor);
     pGengiben->setPosition({3,1,0});
     _players.push_back(pGengiben);
 
@@ -570,7 +570,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     glm::mat4 modelMtx(1.0f);
 
     // draw our _players
-    for(Player* player: _players){
+    for(Character* player: _players){
         player->drawPlayer(modelMtx, viewMtx, projMtx);
     }
 //    _currentPlayer->drawPlayer(modelMtx, viewMtx, projMtx);

@@ -10,7 +10,7 @@
 #include "CSCI441/FreeCam.hpp"
 #include "CSCI441/FixedCam.hpp"
 
-#include "Player.h"
+#include "characters/Character.h"
 #include "characters/Skiff.h"
 #include "characters/Vehicle.h"
 #include "characters/Starlord.h"
@@ -100,9 +100,9 @@ private:
     GLfloat topEdge;
     GLfloat bottomEdge;
 
-    std::vector<Player*> _players;
+    std::vector<Character*> _players;
     GLint _currentPlayerIdx;
-    Player* _currentPlayer;
+    Character* _currentPlayer;
 
     /// \desc the size of the world (controls the ground size and locations of buildings)
     static constexpr GLfloat WORLD_SIZE = 55.0f;

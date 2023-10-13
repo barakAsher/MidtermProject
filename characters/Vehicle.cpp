@@ -20,7 +20,6 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint m
 
 
     _colorBody = glm::vec3( 0.1f, 0.6f, 0.9f );
-    //_scaleBody = glm::vec3( 2.0f, 0.5f, 1.0f );
     _scaleBody = glm::vec3( 1.0f, 1.0f, 1.0f );
 
     _position = glm::vec3(0.0f, 0.5f, 0.0f); //position of where the plane is drawn
@@ -34,7 +33,7 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint m
     _rotateNoseAngle = _PI / 3.0f;
 
     _colorProp = glm::vec3( 1.0f, 1.0f, 1.0f );
-    _scaleProp = glm::vec3( 1.1f, 1.0f, 0.025f );
+    _scaleProp = glm::vec3( 2.2f, 2.0f, 0.05f );
     _transProp = glm::vec3( 0.1f, 0.0f, 0.0f );
 
     _colorTail = glm::vec3( 1.0f, 1.0f, 0.0f );

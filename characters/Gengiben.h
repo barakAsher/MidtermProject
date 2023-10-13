@@ -5,9 +5,9 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include "../Player.h"
+#include "Character.h"
 
-class Gengiben: public Player {
+class Gengiben: public Character {
 public:
     /// \desc creates a simple plane that gives the appearance of flight
     /// \param shaderProgramHandle shader program handle that the plane should be drawn using

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(mp)
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES main.cpp mpEngine.cpp mpEngine.h characters/Skiff.cpp characters/Skiff.h
-        Player.h
+        characters/Character.h
         characters/Vehicle.h
         characters/Vehicle.cpp
         characters/Starlord.h

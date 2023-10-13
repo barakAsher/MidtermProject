@@ -9,10 +9,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include "../Player.h"
+#include "Character.h"
 
 
-class Starlord : public Player {
+class Starlord : public Character {
 public:
     //Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation, GLint materialColorUniformLocation);
     Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint modelUniformLocation, GLint normalMtxUniformLocation, GLint materialColorUniformLocation);
