@@ -16,14 +16,15 @@ private:
     glm::vec3 right;     // Camera right direction
     glm::vec3 worldUp;   // World up direction
 
-    float yaw;           // Yaw angle
+
+    float yaw; // Yaw angle
     float pitch;         // Pitch angle
 
     glm::mat4 projectionMatrix;  // Add this line to hold the projection matrix
-    //glm::vec3 position;
 
     float movementSpeed;
     float mouseSensitivity;
+
 
     // Update the camera vectors based on yaw and pitch
     void updateCameraVectors();
@@ -48,6 +49,11 @@ public:
     glm::mat4 getProjectionMatrix() const;
 
     void setPosition(glm::vec3 newPosition);
+
+
+    void setYaw(float newYaw);
+
+    float getYaw() const;
 };
 
 #endif // FIRST_PERSON_CAMERA_H

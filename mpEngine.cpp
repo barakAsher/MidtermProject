@@ -482,10 +482,9 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     // Get the player's look-at point (assuming getLookAtPoint() returns the look-at point)
     glm::vec3 lookAtPoint = _currentPlayer->getPosition();
 
-    float zOffset = -1.0f; // moves the fp_cam out of the center of the player
-    glm::vec3 offset(0.0f, 0.0f, zOffset);
+    float yOffset = 0.2f; // moves the fp_cam a little above the center of the player
+    glm::vec3 offset(0.0f, yOffset, 0.0f);
     fpCam->setPosition(_currentPlayer->getPosition() + offset);
-
 
     pArcballCam->recomputeOrientation();
 
@@ -639,6 +638,32 @@ void mpEngine::_updateScene() {
         pFreeCam->setPhi(currPhi);
         pFreeCam->recomputeOrientation();
     }
+
+
+    //Code to rotate the look direction of the FP cam
+    if (_currentCam == 1) {
+        // Update yaw based on 'A' and 'D' keys
+        if (_keys[GLFW_KEY_A] && !_keys[GLFW_KEY_D]) {
+            GLfloat currAngle = _currentPlayer->getAngle();
+            currAngle += _cameraSpeed.x;
+            // Turn left by decreasing yaw
+            //TODO: fix the hard encoding of the FP yaw adjustment
+            fpCam->setYaw(fpCam->getYaw() - 1.13);
+            //fpCam->setYaw(currAngle);
+        } else if (_keys[GLFW_KEY_D] && !_keys[GLFW_KEY_A]) {
+            // Turn right by increasing yaw
+            //TODO: fix the hard encoding of the FP yaw adjustment
+            fpCam->setYaw(fpCam->getYaw() + 1.13);
+            //fpCam->setYaw(_currentPlayer->getAngle());
+        }
+
+        // Rest of your code...
+
+        // Update view matrix based on the camera's new orientation
+        //viewMatrix = fpCam->getViewMatrix();
+    }
+
+
 }
 
 void mpEngine::run() {

@@ -36,6 +36,16 @@ void FirstPersonCamera::setPosition(glm::vec3 newPosition) {
     position = newPosition;
 }
 
+void FirstPersonCamera::setYaw(float newYaw)
+{
+    yaw = newYaw;
+    updateCameraVectors();
+}
+
+float FirstPersonCamera::getYaw() const
+{
+    return yaw;
+}
 
 void FirstPersonCamera::updateCameraVectors()
 {
@@ -115,3 +125,5 @@ glm::vec3 FirstPersonCamera::getFront() const
 {
     return front;
 }
+
+
