@@ -678,34 +678,25 @@ void mpEngine::_updateScene() {
 
     //Code to rotate the look direction of the FP cam
     if (_currentCam == 1) {
-        // Update yaw based on 'A' and 'D' keys
+        // Update theta based on 'A' and 'D' keys
         if ((_keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT]) && (!_keys[GLFW_KEY_D] || !_keys[GLFW_KEY_RIGHT])) {
             GLfloat currAngle = _currentPlayer->getAngle();
-//            printf("currAngle %f \n",currAngle);
-//            currAngle += _cameraSpeed.y;
-            // Turn left by decreasing yaw
+
             //TODO: fix the hard encoding of the FP yaw adjustment
-//            fpCam -> setPosition(_currentPlayer->getPosition());
+            //set the first person cam angle to the
             fpCam->setTheta(-currAngle);
             fpCam->recomputeOrientation();
-            //fpCam->setYaw(currAngle);
+
         } else if ((_keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT]) && (!_keys[GLFW_KEY_A] || !_keys[GLFW_KEY_LEFT])) {
             GLfloat currAngle = _currentPlayer->getAngle();
-//            printf("currAngle %f \n",currAngle);
-//            currAngle -= _cameraSpeed.y;
-            // Turn right by increasing yaw
+
             //TODO: fix the hard encoding of the FP yaw adjustment
-//            fpCam -> setPosition(_currentPlayer->getPosition());
+
             fpCam->setTheta(-currAngle);
             fpCam->recomputeOrientation();
-            //fpCam->setYaw(_currentPlayer->getAngle());
+
         }
 
-        // Rest of your code...
-
-        // Update view matrix based on the camera's new orientation
-        //viewMatrix = fpCam->getViewMatrix();
-        //}
     }
 
 }
