@@ -444,12 +444,7 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
-<<<<<<< Updated upstream
-    _alpha = .001f;
-=======
     _alpha = 0.001;
-    _lightType = 1;
->>>>>>> Stashed changes
 
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
