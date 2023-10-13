@@ -1,6 +1,6 @@
 # MP - The Fellowship
 ## Land: Rangi
-## Name: Eddie Voss - Eragon, Ben Hempelmann - Gengiben, Barak Asher - Starlord, Porter Fredrickson - Peapodpuffer
+## Eddie Voss - Eragon, Ben Hempelmann - Gengiben, Barak Asher - Starlord, Porter Fredrickson - Peapodpuffer
 
 Description: 
 
