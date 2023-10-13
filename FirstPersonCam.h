@@ -22,11 +22,7 @@ private:
 
     glm::mat4 projectionMatrix;  // Add this line to hold the projection matrix
 
-    float movementSpeed;
-    float mouseSensitivity;
-
-
-    // Update the camera vectors based on yaw and pitch
+    // update camera when it's rotated with A nd D keys
     void updateCameraVectors();
 
 public:
@@ -34,17 +30,6 @@ public:
     FirstPersonCamera(glm::vec3 position);
     // Get the view matrix
     glm::mat4 getViewMatrix();
-
-    // Process input to update the camera's position and orientation
-    void processKeyboard(int direction, float deltaTime);
-    void processMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
-    void processMouseScroll(float yOffset);
-
-    // Getters and setters for camera parameters
-    float getMovementSpeed() const;
-    float getMouseSensitivity() const;
-    glm::vec3 getPosition() const;
-    glm::vec3 getFront() const;
 
     glm::mat4 getProjectionMatrix() const;
 
