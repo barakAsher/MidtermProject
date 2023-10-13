@@ -176,7 +176,7 @@ void mpEngine::mSetupShaders() {
     _lightingShaderUniformLocations.materialColor  = _lightingShaderProgram->getUniformLocation("materialColor");
     _lightingShaderUniformLocations.normalMatrix   = _lightingShaderProgram->getUniformLocation("normalMatrix");
     _lightingShaderUniformLocations.lookAtDir    = _lightingShaderProgram->getUniformLocation("lookAtDir");
-
+    _lightingShaderUniformLocations.alpha   = _lightingShaderProgram->getUniformLocation("alpha");
     // assign attributes
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
     _lightingShaderAttributeLocations.vNormal      = _lightingShaderProgram->getAttributeLocation(("vNormal"));
@@ -434,6 +434,8 @@ void mpEngine::mSetupScene() {
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
 
+    fpCam = new FirstPersonCamera(pArcballCam->getLookAtPoint());
+
     pFreeCam = new CSCI441::FreeCam();
     pFreeCam->setPosition(glm::vec3(30.0f, 20.0f, 15.0f) );
     pFreeCam->setTheta(-M_PI / 3.0f );
@@ -442,6 +444,7 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
+    _alpha = 0.001;
 
     for(int i=0;i<_pointLights.size();i++) {
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.positionLocs[i],1,&_pointLights[i].position[0]);
@@ -495,6 +498,14 @@ void mpEngine::mCleanupBuffers() {
 
 void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
+
+    // Get the player's look-at point (assuming getLookAtPoint() returns the look-at point)
+    glm::vec3 lookAtPoint = _currentPlayer->getPosition();
+
+    float yOffset = 0.2f; // moves the fp_cam a little above the center of the player
+    glm::vec3 offset(0.0f, yOffset, 0.0f);
+    fpCam->setPosition(_currentPlayer->getPosition() + offset);
+
     pArcballCam->recomputeOrientation();
 
     // use our lighting shader program
@@ -646,6 +657,32 @@ void mpEngine::_updateScene() {
         pFreeCam->setPhi(currPhi);
         pFreeCam->recomputeOrientation();
     }
+
+
+    //Code to rotate the look direction of the FP cam
+    if (_currentCam == 1) {
+        // Update yaw based on 'A' and 'D' keys
+        if (_keys[GLFW_KEY_A] && !_keys[GLFW_KEY_D]) {
+            GLfloat currAngle = _currentPlayer->getAngle();
+            currAngle += _cameraSpeed.x;
+            // Turn left by decreasing yaw
+            //TODO: fix the hard encoding of the FP yaw adjustment
+            fpCam->setYaw(fpCam->getYaw() - 1.13);
+            //fpCam->setYaw(currAngle);
+        } else if (_keys[GLFW_KEY_D] && !_keys[GLFW_KEY_A]) {
+            // Turn right by increasing yaw
+            //TODO: fix the hard encoding of the FP yaw adjustment
+            fpCam->setYaw(fpCam->getYaw() + 1.13);
+            //fpCam->setYaw(_currentPlayer->getAngle());
+        }
+
+        // Rest of your code...
+
+        // Update view matrix based on the camera's new orientation
+        //viewMatrix = fpCam->getViewMatrix();
+    }
+
+
 }
 
 void mpEngine::run() {
@@ -666,18 +703,21 @@ void mpEngine::run() {
         // update the viewport - tell OpenGL we want to render to the whole window
         glViewport( 0, 0, framebufferWidth, framebufferHeight );
         // draw everything to the window
+        //ArcBall Camera
         if(_currentCam==1){
             _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+            //Picture in Picture first Person Camera
             if(_fpCamShown){
                 glClear(GL_DEPTH_BUFFER_BIT);
-                glViewport(framebufferWidth*.75f, framebufferHeight*.75f, framebufferWidth*.25f, framebufferHeight*.25f);
-                _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+                glViewport(framebufferWidth * 0.75f, framebufferHeight * 0.75f, framebufferWidth * 0.25f, framebufferHeight * 0.25f);
+                _renderScene(fpCam->getViewMatrix(), fpCam->getProjectionMatrix());
+
             }
         }
+        //Sky Camera
         else if(_currentCam == 2){
             _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
         }
-
 
         _updateScene();
 

@@ -35,7 +35,7 @@ uniform PointLight pointLights[10];
 uniform SpotLight spotLights[10];
 uniform vec3 materialColor;             // the material color for our vertex (& whole object)
 uniform vec3 lookAtDir;
-float alpha = 0.1;
+uniform float alpha;
 
 // attribute inputs
 layout(location = 0) in vec3 vPos;      // the position of this specific vertex in object space

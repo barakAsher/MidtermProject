@@ -9,6 +9,8 @@ set(SOURCE_FILES main.cpp mpEngine.cpp mpEngine.h Skiff.cpp Skiff.h
         Starlord.cpp
         Gengiben.h
         Gengiben.cpp
+        FirstPersonCam.cpp
+        FirstPersonCam.h
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
