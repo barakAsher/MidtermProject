@@ -153,7 +153,6 @@ private:
         GLint materialColor;
         GLint normalMatrix;
         GLint lookAtDir;
-        GLint lightType;
         GLint alpha;
 
     } _lightingShaderUniformLocations;
