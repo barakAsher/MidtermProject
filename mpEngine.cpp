@@ -382,6 +382,8 @@ void mpEngine::mSetupScene() {
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
 
+    fpCam = new FirstPersonCamera(pArcballCam->getLookAtPoint());
+
     pFreeCam = new CSCI441::FreeCam();
     pFreeCam->setPosition(glm::vec3(30.0f, 20.0f, 15.0f) );
     pFreeCam->setTheta(-M_PI / 3.0f );
@@ -648,18 +650,26 @@ void mpEngine::run() {
         // update the viewport - tell OpenGL we want to render to the whole window
         glViewport( 0, 0, framebufferWidth, framebufferHeight );
         // draw everything to the window
+        //ArcBall Camera
         if(_currentCam==1){
             _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+            //Picture in Picture first Person Camera
             if(_fpCamShown){
                 glClear(GL_DEPTH_BUFFER_BIT);
-                glViewport(framebufferWidth*.75f, framebufferHeight*.75f, framebufferWidth*.25f, framebufferHeight*.25f);
-                _renderScene(pArcballCam->getViewMatrix(), pArcballCam->getProjectionMatrix());
+                glViewport(framebufferWidth * 0.75f, framebufferHeight * 0.75f, framebufferWidth * 0.25f, framebufferHeight * 0.25f);
+                _renderScene(fpCam->getViewMatrix(), fpCam->getProjectionMatrix());
+
             }
         }
+        //Sky Camera
         else if(_currentCam == 2){
             _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
         }
 
+        // overhead camera window
+//        glClear(GL_DEPTH_BUFFER_BIT);
+//        glViewport(framebufferWidth - 400, framebufferHeight - 400, 400, 400);
+//        _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
 
         _updateScene();
 

@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Starlord.h"
 #include "Gengiben.h"
+#include "FirstPersonCam.h"
 
 
 #include <vector>
@@ -84,6 +85,8 @@ private:
     /// \desc the arcball camera in our world
     ArcballCam* pArcballCam;
     CSCI441::FreeCam* pFreeCam;
+    FirstPersonCamera* fpCam;
+
 
     int _currentCam;
     bool _fpCamShown;
@@ -92,10 +95,6 @@ private:
     /// \brief x = forward/backward delta, y = rotational delta
     glm::vec2 _cameraSpeed;
 
-//    /// \desc our skiff model
-//    Skiff* _pSkiff;
-//    Vehicle* _pVehicle;
-//    Starlord* _pStarlord;
 
     /// \desc edges of our ground plane
     GLfloat leftEdge;
