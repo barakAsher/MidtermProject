@@ -2,14 +2,14 @@
 // Created by eddie on 10/9/23.
 //
 
-#ifndef MP_PLAYER_H
-#define MP_PLAYER_H
+#ifndef MP_CHARACTER_H
+#define MP_CHARACTER_H
 
 #include <glm/glm.hpp>
 
-class Player {
+class Character {
 public:
-    Player(){
+    Character(){
         _angle = 0;
         _position = {0,0,0};
         _movementFactor = 0.1;
@@ -56,4 +56,4 @@ private:
     float _movementFactor;
 };
 
-#endif //MP_PLAYER_H
+#endif //MP_CHARACTER_H

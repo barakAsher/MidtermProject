@@ -229,36 +229,36 @@ void mpEngine::mSetupBuffers() {
     CSCI441::setVertexAttributeLocations( _lightingShaderAttributeLocations.vPos,_lightingShaderAttributeLocations.vNormal);
 
     // give the skiff the normal matrix location
-    Player* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
-                        _lightingShaderUniformLocations.mvpMatrix,
-                        _lightingShaderUniformLocations.modelMtx,
-                        _lightingShaderUniformLocations.normalMatrix,
-                        _lightingShaderUniformLocations.materialColor);
+    Character* pSkiff = new Skiff(_lightingShaderProgram->getShaderProgramHandle(),
+                                  _lightingShaderUniformLocations.mvpMatrix,
+                                  _lightingShaderUniformLocations.modelMtx,
+                                  _lightingShaderUniformLocations.normalMatrix,
+                                  _lightingShaderUniformLocations.materialColor);
     pSkiff->setPosition({0,0,0});
     _players.push_back(pSkiff);
 
-    Player* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
-                                   _lightingShaderUniformLocations.mvpMatrix,
-                                   _lightingShaderUniformLocations.modelMtx,
-                                   _lightingShaderUniformLocations.normalMatrix,
-                                   _lightingShaderUniformLocations.materialColor);
+    Character* pVehicle = new Vehicle(_lightingShaderProgram->getShaderProgramHandle(),
+                                      _lightingShaderUniformLocations.mvpMatrix,
+                                      _lightingShaderUniformLocations.modelMtx,
+                                      _lightingShaderUniformLocations.normalMatrix,
+                                      _lightingShaderUniformLocations.materialColor);
 
     pVehicle->setPosition({1,0,0});
     _players.push_back((pVehicle));
 
-    Player* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
-                                     _lightingShaderUniformLocations.mvpMatrix,
-                                     _lightingShaderUniformLocations.modelMtx,
-                                     _lightingShaderUniformLocations.normalMatrix,
-                                     _lightingShaderUniformLocations.materialColor);
+    Character* pStarlord = new Starlord(_lightingShaderProgram->getShaderProgramHandle(),
+                                        _lightingShaderUniformLocations.mvpMatrix,
+                                        _lightingShaderUniformLocations.modelMtx,
+                                        _lightingShaderUniformLocations.normalMatrix,
+                                        _lightingShaderUniformLocations.materialColor);
     pStarlord->setPosition({2,0,0});
     _players.push_back(pStarlord);
 
-    Player* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
-                                     _lightingShaderUniformLocations.mvpMatrix,
-                                     _lightingShaderUniformLocations.modelMtx,
-                                     _lightingShaderUniformLocations.normalMatrix,
-                                     _lightingShaderUniformLocations.materialColor);
+    Character* pGengiben = new Gengiben(_lightingShaderProgram->getShaderProgramHandle(),
+                                        _lightingShaderUniformLocations.mvpMatrix,
+                                        _lightingShaderUniformLocations.modelMtx,
+                                        _lightingShaderUniformLocations.normalMatrix,
+                                        _lightingShaderUniformLocations.materialColor);
     pGengiben->setPosition({3,1,0});
     _players.push_back(pGengiben);
 
@@ -570,7 +570,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     glm::mat4 modelMtx(1.0f);
 
     // draw our _players
-    for(Player* player: _players){
+    for(Character* player: _players){
         player->drawPlayer(modelMtx, viewMtx, projMtx);
     }
 //    _currentPlayer->drawPlayer(modelMtx, viewMtx, projMtx);
@@ -669,14 +669,14 @@ void mpEngine::_updateScene() {
     //Code to rotate the look direction of the FP cam
     if (_currentCam == 1) {
         // Update yaw based on 'A' and 'D' keys
-        if (_keys[GLFW_KEY_A] && !_keys[GLFW_KEY_D]) {
+        if ( (_keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT]) && (!_keys[GLFW_KEY_D] || !_keys[GLFW_KEY_RIGHT])) {
             GLfloat currAngle = _currentPlayer->getAngle();
             currAngle += _cameraSpeed.x;
             // Turn left by decreasing yaw
             //TODO: fix the hard encoding of the FP yaw adjustment
             fpCam->setYaw(fpCam->getYaw() - 1.13);
             //fpCam->setYaw(currAngle);
-        } else if (_keys[GLFW_KEY_D] && !_keys[GLFW_KEY_A]) {
+        } else if ((_keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT]) && (!_keys[GLFW_KEY_A] || !_keys[GLFW_KEY_LEFT])) {
             // Turn right by increasing yaw
             //TODO: fix the hard encoding of the FP yaw adjustment
             fpCam->setYaw(fpCam->getYaw() + 1.13);

@@ -6,9 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-#include "Player.h"
+#include "Character.h"
 
-class Skiff : public Player{
+class Skiff : public Character{
 public:
     /// \desc creates a simple skiff that gives the appearance of floating
     /// \param shaderProgramHandle shader program handle that the skiff should be drawn using
