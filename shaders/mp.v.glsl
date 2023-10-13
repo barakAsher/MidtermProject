@@ -50,7 +50,7 @@ vec3 calcPointLight(PointLight pLight, vec4 vPosTrans, vec4 vNormTrans){
     lightDirection = normalize(lightDirection);
 
     vec3 diffuse = pLight.color*materialColor*max(dot(lightDirection,vNormTrans),0);
-    vec3 ambient = diffuse;
+    vec3 ambient = pLight.color*.1*materialColor;
     vec4 reflectanceVec = lightDirection + 2 *dot(-lightDirection,vNormTrans)*vNormTrans;
     vec3 reflectance = pLight.color * materialColor * pow(max(dot(vec4(lookAtDir,1), reflectanceVec), 0),alpha);
 
@@ -63,7 +63,7 @@ vec3 calcPointLight(PointLight pLight, vec4 vPosTrans, vec4 vNormTrans){
 vec3 calcDirLight(DirectionalLight dirLight, vec3 vNormTrans){
     vec3 lightDirection = normalize(-dirLight.direction);
     vec3 diffuse = dirLight.color * materialColor * (max(dot(vNormTrans, lightDirection), 0));
-    vec3 ambient = diffuse;
+    vec3 ambient = dirLight.color*.1*materialColor;
 
     vec3 reflectanceVec = lightDirection + 2 *dot(-lightDirection,vNormTrans)*vNormTrans;
     vec3 reflectance = dirLight.color * materialColor * pow(max(dot(lookAtDir, reflectanceVec), 0),alpha);

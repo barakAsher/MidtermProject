@@ -23,7 +23,7 @@ GLfloat getRand() {
 
 mpEngine::mpEngine()
          : CSCI441::OpenGLEngine(4, 1,
-                                 640, 480,
+                                 960, 720,
                                  "MP: The Fellowship") {
 
     for(auto& _key : _keys) _key = GL_FALSE;
@@ -148,12 +148,13 @@ void mpEngine::_setupLights(){
     _lightingShaderUniformLocations.numPointLights = _lightingShaderProgram->getUniformLocation("numPointLights");
     _lightingShaderUniformLocations.numDirLights = _lightingShaderProgram->getUniformLocation("numDirLights");
     _lightingShaderUniformLocations.numSpotLights = _lightingShaderProgram->getUniformLocation("numSpotLights");
-    PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
-    PointLight secondPoint{{30,2,30},{1,1,1},0,.2f,0};
-    _pointLights.emplace_back(firstPoint);
+
+    PointLight firstPoint{{0,2,0},{1,1,1},0,.9f,0};
+    PointLight secondPoint{{30,2,30},{1,1,1},0,.1f,0};
+//    _pointLights.emplace_back(firstPoint);
     _pointLights.emplace_back(secondPoint);
 
-    DirectionalLight firstDir{{-1,-1,-1},{0.918, 0.961, 0.671},.2};
+    DirectionalLight  firstDir{{-1,-1,-1},{0.918, 0.961, 0.671},.4};
     _dirLights.emplace_back(firstDir);
 
     SpotLight firstSpot{{0,10,0},{0,-1,0},{1,0,1},1, 0,.2,0};
@@ -383,7 +384,7 @@ void mpEngine::_generateEnvironment() {
     for (int i = LEFT_END_POINT; i < RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
         for (int j = BOTTOM_END_POINT; j < TOP_END_POINT; j += GRID_SPACING_LENGTH) {
             // Determine if a building should be placed
-            bool placeBuilding = i % 2 && j % 2 && getRand() < 0.2f;
+            bool placeBuilding = i % 2 && j % 2 && getRand() < 0.1f;
 
             // Translate to the spot (for both building and mushroom)
             glm::mat4 transToSpotMtx = glm::translate(glm::mat4(1.0), glm::vec3(i, 0.0f, j));
@@ -404,7 +405,7 @@ void mpEngine::_generateEnvironment() {
                 // Store building properties
                 BuildingData currentBuilding = {modelMatrix, color};
                 _buildings.emplace_back(currentBuilding);
-            } if (i % 2 && j % 2 && getRand() < 0.05f)  { //Adjust the value to the right of the < sign for more or less mushrooms
+            } if (i % 2 && j % 2 && getRand() < 0.005f)  { //Adjust the value to the right of the < sign for more or less mushrooms
                 // For mushrooms, generate a random position within the grid cell
                 // For mushrooms, generate a random position within the grid cell
                 float mushPosX = i + (getRand() * (GRID_SPACING_WIDTH - 0.2f)) + 0.1f;
@@ -444,7 +445,7 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
-    _alpha = 0.001;
+    _alpha = 1;
 
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
@@ -520,10 +521,10 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
     glm::vec3 lookAtDir;
     if(_currentCam == 1){
-        lookAtDir = glm::normalize(pArcballCam->getPosition() - pArcballCam->getLookAtPoint());
+        lookAtDir = -glm::normalize(pArcballCam->getPosition() - pArcballCam->getLookAtPoint());
 //        printf("lookAtDir %f, %f, %f \n" ,lookAtDir[0],lookAtDir[1],lookAtDir[2]);
     }else if(_currentCam == 2){
-        lookAtDir = glm::normalize(pFreeCam->getPosition() - pFreeCam->getLookAtPoint());
+        lookAtDir = -glm::normalize(pFreeCam->getPosition() - pFreeCam->getLookAtPoint());
     }
 
     glProgramUniform3fv(_lightingShaderProgram -> getShaderProgramHandle(), _lightingShaderUniformLocations.lookAtDir, 1, &lookAtDir[0]);
@@ -564,12 +565,18 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
         _computeAndSendMatrixUniforms(translatedModelMatrix, viewMtx, projMtx);
         _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, currentMushroomData.color);
-        CSCI441::drawSolidSphere(1.0, 10, 10);
+        CSCI441::drawSolidSphere(1.0, 100, 100);
     }
 
-    //// BEGIN DRAWING THE SKIFF ////
     glm::mat4 modelMtx(1.0f);
+    modelMtx = glm::translate(modelMtx, {8,0,8});
+    modelMtx = glm::rotate(modelMtx, -glm::pi<float>()/2, CSCI441::X_AXIS);
+    _computeAndSendMatrixUniforms(modelMtx, viewMtx, projMtx);
+    _lightingShaderProgram->setProgramUniform(_lightingShaderUniformLocations.materialColor, glm::vec3(0.529, 0.498, 0.859));
+    CSCI441::drawSolidTeapot(1.0f);
 
+    //// BEGIN DRAWING THE SKIFF ////
+    modelMtx= glm::mat4(1.0f);
     // draw our _players
     for(Character* player: _players){
         player->drawPlayer(modelMtx, viewMtx, projMtx);
