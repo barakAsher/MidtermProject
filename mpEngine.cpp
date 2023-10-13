@@ -153,7 +153,7 @@ void mpEngine::_setupLights(){
     _pointLights.emplace_back(firstPoint);
     _pointLights.emplace_back(secondPoint);
 
-    DirectionalLight firstDir{{-1,-1,-1},{1,1,1},.2};
+    DirectionalLight firstDir{{-1,-1,-1},{0.918, 0.961, 0.671},.2};
     _dirLights.emplace_back(firstDir);
 
     SpotLight firstSpot{{0,10,0},{0,-1,0},{1,0,1},1, 0,.2,0};
