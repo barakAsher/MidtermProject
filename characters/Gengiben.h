@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include "Player.h"
+#include "../Player.h"
 
 class Gengiben: public Player {
 public:
