@@ -725,7 +725,7 @@ void mpEngine::run() {
             //Picture in Picture first Person Camera
             if(_fpCamShown){
                 glClear(GL_DEPTH_BUFFER_BIT);
-                glViewport(framebufferWidth * 0.75f, framebufferHeight * 0.75f, framebufferWidth * 0.25f, framebufferHeight * 0.25f);
+                glViewport(framebufferWidth * 0.5f, framebufferHeight * 0.5f, framebufferWidth * 0.5f, framebufferHeight * 0.5f);
                 _renderScene(fpCam->getViewMatrix(), fpCam->getProjectionMatrix());
 
             }
