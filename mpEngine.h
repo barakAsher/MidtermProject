@@ -153,6 +153,8 @@ private:
         GLint materialColor;
         GLint normalMatrix;
         GLint lookAtDir;
+        GLint lightType;
+        GLint alpha;
 
     } _lightingShaderUniformLocations;
 
@@ -215,6 +217,9 @@ private:
         GLint vNormal;
 
     } _lightingShaderAttributeLocations;
+
+    GLint _lightType;
+    float _alpha;
 
     /// \desc precomputes the matrix uniforms CPU-side and then sends them
     /// to the GPU to be used in the shader for each vertex.  It is more efficient
