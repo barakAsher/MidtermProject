@@ -51,20 +51,19 @@ void mpEngine::handleKeyEvent(GLint key, GLint action) {
             case GLFW_KEY_ESCAPE:
                 setWindowShouldClose();
                 break;
-
-            case GLFW_KEY_LEFT_CONTROL:
+            case GLFW_KEY_LEFT_CONTROL: //switch players
                 _currentPlayerIdx++;
                 if (_currentPlayerIdx > _players.size() - 1)
                     _currentPlayerIdx = 0;
                 pArcballCam->setTheta(glm::pi<float>() - _players[_currentPlayerIdx]->getAngle());
                 break;
-            case GLFW_KEY_1:
+            case GLFW_KEY_1:    //arcball cam
                 _currentCam=1;
                 break;
-            case GLFW_KEY_2:
+            case GLFW_KEY_2:    //free cam
                 _currentCam=2;
                 break;
-            case GLFW_KEY_3:
+            case GLFW_KEY_3:    //first person overlay cam
                 _fpCamShown = !_fpCamShown;
                 break;
 
@@ -144,22 +143,29 @@ void mpEngine::mSetupOpenGL() {
 
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	        // clear the frame buffer to black
 }
+
+//Initialize light sources and buffer their data
 void mpEngine::_setupLights(){
+    //get uniform handles
     _lightingShaderUniformLocations.numPointLights = _lightingShaderProgram->getUniformLocation("numPointLights");
     _lightingShaderUniformLocations.numDirLights = _lightingShaderProgram->getUniformLocation("numDirLights");
     _lightingShaderUniformLocations.numSpotLights = _lightingShaderProgram->getUniformLocation("numSpotLights");
 
+    //set up point lights
     PointLight firstPoint{{0,2,0},{1,1,1},0,.9f,0};
     PointLight secondPoint{{30,2,30},{1,1,1},0,.1f,0};
 //    _pointLights.emplace_back(firstPoint);
     _pointLights.emplace_back(secondPoint);
 
+    //set up directional lights
     DirectionalLight  firstDir{{-1,-1,-1},{0.918, 0.961, 0.671},.4};
     _dirLights.emplace_back(firstDir);
 
+    //set up spotlights
     SpotLight firstSpot{{0,10,0},{0,-1,0},{1,0,1},1, 0,.2,0};
     _spotLights.emplace_back(firstSpot);
 
+    //send the number of each light type to gpu
     int numDirLights = _dirLights.size();
     glProgramUniform1iv(_lightingShaderProgram->getShaderProgramHandle(),_lightingShaderUniformLocations.numDirLights,1,&numDirLights);
     int numPointLights = _pointLights.size();
@@ -183,7 +189,8 @@ void mpEngine::mSetupShaders() {
     _lightingShaderAttributeLocations.vNormal      = _lightingShaderProgram->getAttributeLocation(("vNormal"));
 
     _setupLights();
-    //need to set pointlight size here
+
+    //Get the uniform locations for each specific light
     for(int i=0;i<_pointLights.size();i++){
         std::string test = "pointLights["+std::to_string(i)+"].pos";
         _pointLightUniformLocations.positionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
@@ -196,7 +203,6 @@ void mpEngine::mSetupShaders() {
         test = "pointLights["+std::to_string(i)+"].atten.exp";
         _pointLightUniformLocations.expAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
     }
-
     for(int i=0;i<_dirLights.size();i++){
         std::string test = "dirLights["+std::to_string(i)+"].direction";
         _dirLightUniformLocations.directionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
@@ -205,7 +211,6 @@ void mpEngine::mSetupShaders() {
         test = "dirLights["+std::to_string(i)+"].intensity";
         _dirLightUniformLocations.intensityLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
     }
-
     for(int i=0;i<_spotLights.size();i++){
         std::string test = "spotLights["+std::to_string(i)+"].pos";
         _spotLightUniformLocations.positionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
@@ -288,26 +293,8 @@ void mpEngine::_createGroundBuffers() {
     std::vector<GLushort> indices;
     // draw horizontal lines
     GLushort currentIndex = 0;
-//    for(GLfloat i = LEFT_END_POINT; i <= RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
-//        Vertex bottomVert = {i, 0.0f, BOTTOM_END_POINT,0,1,0};
-//        Vertex topVert = {i, 0.0f, TOP_END_POINT ,0,1,0};
-//        vertices.emplace_back(bottomVert);
-//        vertices.emplace_back(topVert);
-//        indices.emplace_back(currentIndex);
-//        indices.emplace_back(currentIndex + 1);
-//        currentIndex += 2;
-//    }
-//    // draw vertical lines
-//    for(GLfloat j = BOTTOM_END_POINT; j <= TOP_END_POINT; j += GRID_SPACING_LENGTH) {
-//        Vertex leftVert = {LEFT_END_POINT, 0.0f, j ,0,1,0};
-//        Vertex rightVert = {RIGHT_END_POINT, 0.0f, j,0,1,0 };
-//        vertices.emplace_back(leftVert);
-//        vertices.emplace_back(rightVert);
-//        indices.emplace_back(currentIndex);
-//        indices.emplace_back(currentIndex + 1);
-//        currentIndex += 2;
-//    }
 
+    //Assign points to every intersection of the grid for lighting purposes
     for(float i=LEFT_END_POINT;i<=RIGHT_END_POINT;i+=GRID_SPACING_WIDTH){
         for(float j=BOTTOM_END_POINT;j<=TOP_END_POINT;j+=GRID_SPACING_LENGTH){
             Vertex first = {i,0,j,0,1,0};
@@ -323,6 +310,7 @@ void mpEngine::_createGroundBuffers() {
     int numCols = (RIGHT_END_POINT-LEFT_END_POINT)/GRID_SPACING_WIDTH +1;
     int numRows = (TOP_END_POINT-BOTTOM_END_POINT)/GRID_SPACING_LENGTH+1;
 
+    //assign indices for the grid. Actually makes squares so we'll call this a feature, not a bug
     for(int i=0;i<numCols;i++){
         for(int j=0;j<numRows ;j++){
             indices.emplace_back(i*numCols+j);
@@ -379,8 +367,8 @@ void mpEngine::_generateEnvironment() {
 
     glm::vec3 color(0.5f, 0.4f, 0.4f);
     glm::vec3 mushColor(1.0f, 0.4f, 0.4f);
-    // psych! everything's on a grid.
-    // lava rock color
+
+    //setup the buildings and mushrooms
     for (int i = LEFT_END_POINT; i < RIGHT_END_POINT; i += GRID_SPACING_WIDTH) {
         for (int j = BOTTOM_END_POINT; j < TOP_END_POINT; j += GRID_SPACING_LENGTH) {
             // Determine if a building should be placed
@@ -447,6 +435,7 @@ void mpEngine::mSetupScene() {
 
     _alpha = 1;
 
+    //set alpha for the specular component of lighting, for this program everything has the same alpha
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
             _lightingShaderUniformLocations.alpha,
@@ -454,6 +443,7 @@ void mpEngine::mSetupScene() {
             &_alpha
     );
 
+    //set point light uniform values
     for(int i=0;i<_pointLights.size();i++) {
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.positionLocs[i],1,&_pointLights[i].position[0]);
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.colorLocs[i],1,&_pointLights[i].color[0]);
@@ -461,13 +451,13 @@ void mpEngine::mSetupScene() {
         glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.quadAttenLocs[i],1,&_pointLights[i].quadAtten);
         glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.expAttenLocs[i],1,&_pointLights[i].expAtten);
     }
-
+    //set directional light uniform values
     for(int i=0;i<_dirLights.size();i++) {
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_dirLightUniformLocations.directionLocs[i],1,&_dirLights[i].direction[0]);
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_dirLightUniformLocations.colorLocs[i],1,&_dirLights[i].color[0]);
         glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_dirLightUniformLocations.intensityLocs[i],1,&_dirLights[i].intensity);
     }
-
+    //set the spotlight directional values
     for(int i=0;i<_spotLights.size();i++) {
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.positionLocs[i],1,&_spotLights[i].position[0]);
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.dirLocs[i],1,&_spotLights[i].direction[0]);
@@ -519,10 +509,10 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     // use our lighting shader program
     _lightingShaderProgram->useProgram();
 
+    //set the current camera look at direction on gpu
     glm::vec3 lookAtDir;
     if(_currentCam == 1){
         lookAtDir = -glm::normalize(pArcballCam->getPosition() - pArcballCam->getLookAtPoint());
-//        printf("lookAtDir %f, %f, %f \n" ,lookAtDir[0],lookAtDir[1],lookAtDir[2]);
     }else if(_currentCam == 2){
         lookAtDir = -glm::normalize(pFreeCam->getPosition() - pFreeCam->getLookAtPoint());
     }

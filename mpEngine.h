@@ -154,11 +154,13 @@ private:
 
     } _lightingShaderUniformLocations;
 
+    //info for directional lights
     struct DirectionalLight{
         glm::vec3 direction;
         glm::vec3 color;
         float intensity;
     };
+    //info for point lights
     struct PointLight{
         glm::vec3 position;
         glm::vec3 color;
@@ -166,6 +168,7 @@ private:
         GLfloat quadAtten;
         GLfloat expAtten;
     };
+    //info for spotlights
     struct SpotLight{
         glm::vec3 position;
         glm::vec3 direction;
