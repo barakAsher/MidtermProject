@@ -39,6 +39,8 @@ public:
     void setYaw(float newYaw);
 
     float getYaw() const;
+
+    void updateYawFromPlayer(float playerYaw);
 };
 
 #endif // FIRST_PERSON_CAMERA_H

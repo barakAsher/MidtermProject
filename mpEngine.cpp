@@ -593,9 +593,15 @@ void mpEngine::_updateScene() {
     GLfloat skiffMovementSpeed = 0.1f;
     // turn right
     if( _keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT] ) {
+        //Update the characters angle
         GLfloat currAngle = _currentPlayer->getAngle();
         currAngle -= _cameraSpeed.y;
         _currentPlayer->setAngle(currAngle);
+
+        //update the FPCams angle
+//        fpCam->setYaw(_currentPlayer->getAngle());
+        fpCam->setYaw(fpCam->getYaw() + 1.13);
+
         pArcballCam->rotate(_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
 //        pOverheadCam->rotate(_cameraSpeed.y, 0.0f);
@@ -604,9 +610,16 @@ void mpEngine::_updateScene() {
     }
     // turn left
     if( _keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT] ) {
+        //Update the characters angle
         GLfloat currAngle = _currentPlayer->getAngle();
         currAngle += _cameraSpeed.y;
         _currentPlayer->setAngle(currAngle);
+
+        //Update the FP cams angle
+        //fpCam->setYaw(_currentPlayer->getAngle());
+        fpCam->setYaw(fpCam->getYaw() - 1.13);
+
+        //update the arcballs angle
         pArcballCam->rotate(-_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
 //        pOverheadCam->rotate(-_cameraSpeed.y, 0.0f);
@@ -675,27 +688,27 @@ void mpEngine::_updateScene() {
 
 
     //Code to rotate the look direction of the FP cam
-    if (_currentCam == 1) {
-        // Update yaw based on 'A' and 'D' keys
-        if ( (_keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT]) && (!_keys[GLFW_KEY_D] || !_keys[GLFW_KEY_RIGHT])) {
-            GLfloat currAngle = _currentPlayer->getAngle();
-            currAngle += _cameraSpeed.x;
-            // Turn left by decreasing yaw
-            //TODO: fix the hard encoding of the FP yaw adjustment
-            fpCam->setYaw(fpCam->getYaw() - 1.13);
-            //fpCam->setYaw(currAngle);
-        } else if ((_keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT]) && (!_keys[GLFW_KEY_A] || !_keys[GLFW_KEY_LEFT])) {
-            // Turn right by increasing yaw
-            //TODO: fix the hard encoding of the FP yaw adjustment
-            fpCam->setYaw(fpCam->getYaw() + 1.13);
-            //fpCam->setYaw(_currentPlayer->getAngle());
-        }
+//    if (_currentCam == 1) {
+//        // Update yaw based on 'A' and 'D' keys
+//        if ( (_keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT]) && (!_keys[GLFW_KEY_D] || !_keys[GLFW_KEY_RIGHT])) {
+//            GLfloat currAngle = _currentPlayer->getAngle();
+//            currAngle += _cameraSpeed.x;
+//            // Turn left by decreasing yaw
+//            //TODO: fix the hard encoding of the FP yaw adjustment
+//            fpCam->setYaw(fpCam->getYaw() - 1.13);
+//            //fpCam->setYaw(currAngle);
+//        } else if ((_keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT]) && (!_keys[GLFW_KEY_A] || !_keys[GLFW_KEY_LEFT])) {
+//            // Turn right by increasing yaw
+//            //TODO: fix the hard encoding of the FP yaw adjustment
+//            fpCam->setYaw(fpCam->getYaw() + 1.13);
+//            //fpCam->setYaw(_currentPlayer->getAngle());
+//        }
 
         // Rest of your code...
 
         // Update view matrix based on the camera's new orientation
         //viewMatrix = fpCam->getViewMatrix();
-    }
+    //}
 
 
 }
