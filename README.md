@@ -14,7 +14,20 @@ and attenuation and the lights are colored.
 Usage: 
 Forward movement: W key or Up arrow key
 Backward movement: S key or down arrow
+Rotate Character left: A or left arrow key
+Rotate Character right: D or right arrow key
 
+ArcBall Camera selection: Press 1
+    Use the mouse + left click to drag the ArcBall around the look at point
+
+Free Camera selection: Press 2
+    Press the space bar to move Camera forward 
+    Press Shift + Space to move the camera backward
+    Use the mouse + left click to drag and change the free cams heading
+
+If in ArcBall view, press 3 to make first person viewport camera appear in the top right.
+
+Change Characters: Press the control key to cycle between which character the camera follows. 
 
 Compilation: Download the MP zip file. Unzip. All source code can be compiled and ran with cmake in CLION or another IDE.
 
