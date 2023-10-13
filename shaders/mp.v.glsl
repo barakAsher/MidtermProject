@@ -113,7 +113,7 @@ void main() {
         color += calcPointLight(pointLights[i], vertexTransformed, vec4(normalTransformed,1));
     }
     for(int i=0;i<numSpotLights;i++){
-        color += calcSpotLight(spotLights[i], vertexTransformed, vec4(normalTransformed,1));
+        color += calcSpotLight(spotLights[i], vertexTransformed, vec4(normalTransformed, 1));
     }
 
 }
