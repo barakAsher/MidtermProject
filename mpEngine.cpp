@@ -444,7 +444,12 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
+<<<<<<< Updated upstream
     _alpha = .001f;
+=======
+    _alpha = 0.001;
+    _lightType = 1;
+>>>>>>> Stashed changes
 
     glProgramUniform1fv(
             _lightingShaderProgram->getShaderProgramHandle(),
@@ -521,6 +526,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     glm::vec3 lookAtDir;
     if(_currentCam == 1){
         lookAtDir = glm::normalize(pArcballCam->getPosition() - pArcballCam->getLookAtPoint());
+//        printf("lookAtDir %f, %f, %f \n" ,lookAtDir[0],lookAtDir[1],lookAtDir[2]);
     }else if(_currentCam == 2){
         lookAtDir = glm::normalize(pFreeCam->getPosition() - pFreeCam->getLookAtPoint());
     }
