@@ -683,7 +683,7 @@ void mpEngine::_updateScene() {
             GLfloat currAngle = _currentPlayer->getAngle();
 
             //TODO: fix the hard encoding of the FP yaw adjustment
-            //set the first person cam angle to the
+            //set the first person cam angle to the inverse of the player current angle so the turn works properly
             fpCam->setTheta(-currAngle);
             fpCam->recomputeOrientation();
 

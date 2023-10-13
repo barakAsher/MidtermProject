@@ -17,18 +17,6 @@ FirstPersonCam::FirstPersonCam(
     mProjectionMatrix = glm::perspective(_fovy, _aspectRatio, _nearClipPlane, _farClipPlane);
 }
 
-//inline void FirstPersonCam::recomputeOrientation() {
-//    // compute position vector based on spherical to cartesian conversion
-//    mCameraDirection.x =  glm::sin(glm::radians(mCameraTheta) ) * glm::sin(glm::radians(mCameraPhi) );
-//    mCameraDirection.y = -glm::cos(glm::radians(mCameraPhi) );
-//    mCameraDirection.z = -glm::cos(glm::radians(mCameraTheta) ) * glm::sin(glm::radians(mCameraPhi) );
-//
-//    // and normalize this directional vector!
-//    mCameraDirection = glm::normalize(mCameraDirection );
-//
-//    _updateFreeCam2CameraViewMatrix();
-//}
-
 inline void FirstPersonCam::recomputeOrientation() {
     // compute direction vector based on spherical to cartesian conversion
     mCameraDirection.x =  glm::sin(mCameraTheta ) * glm::sin(mCameraPhi );
