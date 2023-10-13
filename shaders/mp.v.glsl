@@ -3,6 +3,7 @@
 struct DirectionalLight{
     vec3 color;
     vec3 direction;
+    float intensity;
 };
 struct Attenuation{
     float lin;
@@ -14,6 +15,13 @@ struct PointLight{
     vec3 color;
     vec3 pos;
 };
+struct SpotLight{
+    Attenuation atten;
+    vec3 color;
+    vec3 pos;
+    vec3 dir;
+    float angle;
+};
 
 // uniform inputs
 uniform mat4 mvpMatrix;                 // the precomputed Model-View-Projection Matrix
@@ -24,9 +32,8 @@ uniform int numPointLights;
 uniform int numSpotLights;
 uniform DirectionalLight dirLights[10];
 uniform PointLight pointLights[10];
+uniform SpotLight spotLights[10];
 uniform vec3 materialColor;             // the material color for our vertex (& whole object)
-uniform vec3 lightColor;
-uniform vec3 lightDirection;
 uniform vec3 lookAtDir;
 float alpha = 0.1;
 
@@ -45,12 +52,42 @@ vec3 calcPointLight(PointLight pLight, vec4 vPosTrans, vec4 vNormTrans){
     vec3 ambient = pLight.color*.1*materialColor;
     vec3 diffuse = pLight.color*materialColor*max(dot(lightDirection,vNormTrans),0);
     vec4 reflectanceVec = lightDirection + 2 *(dot(vNormTrans,-lightDirection))*vNormTrans;
-    vec3 reflectance = lightColor * materialColor * max(dot(vec4(lookAtDir,1), reflectanceVec), 0.0);
+    vec3 reflectance = pLight.color * materialColor * max(dot(vec4(lookAtDir,1), reflectanceVec), 0.0);
 
     float attenuation  = pLight.atten.lin + pLight.atten.quad * distance + pLight.atten.exp*distance*distance;
     vec3 color = diffuse + ambient + reflectance;
     color = color/attenuation;
     return color;
+}
+
+vec3 calcDirLight(DirectionalLight dirLight, vec3 vNormTrans){
+    vec3 lightDirection = normalize(-dirLight.direction);
+    vec3 diffuse = dirLight.color * materialColor * (max(dot(vNormTrans, lightDirection), 0));
+
+    vec3 reflectanceVec = lightDirection + 2 *dot(-lightDirection,vNormTrans)*vNormTrans;
+    vec3 reflectance = dirLight.color * materialColor * pow(max(dot(lookAtDir, reflectanceVec), 0),alpha);
+
+    vec3 retColor = diffuse * dirLight.intensity;
+    return retColor;
+}
+
+vec3 calcSpotLight(SpotLight spotLight, vec4 vPosTrans, vec4 vNormTrans){
+    vec4 lightDirection = vec4(spotLight.pos,1)-vPosTrans; //get the light direction to point light
+    float distance = length(lightDirection);
+    lightDirection = normalize(lightDirection);
+    if (acos(dot(lightDirection,vec4(spotLight.dir,1))) > spotLight.angle){
+        return vec3(0,0,0);
+    }
+
+    vec3 ambient = spotLight.color*.1*materialColor;
+    vec3 diffuse = spotLight.color*materialColor*max(dot(lightDirection,vNormTrans),0);
+    vec4 reflectanceVec = lightDirection + 2 *(dot(vNormTrans,-lightDirection))*vNormTrans;
+    vec3 reflectance = spotLight.color * materialColor * max(dot(vec4(lookAtDir,1), reflectanceVec), 0.0);
+
+    float attenuation  = spotLight.atten.lin + spotLight.atten.quad * distance + spotLight.atten.exp*distance*distance;
+    vec3 retColor = diffuse + ambient + reflectance;
+    retColor = retColor/attenuation;
+    return retColor;
 }
 void main() {
     // transform & output the vertex in clip space
@@ -63,8 +100,14 @@ void main() {
     vec3 normalTransformed = normalMatrix * vNormal;
     vec4 vertexTransformed = modelMtx*vec4(vPos,1);
     color = vec3(0,0,0);
-    for(int i=0;i<numPointLights;i++){
-        color += calcPointLight(pointLights[i], vertexTransformed, vec4(normalTransformed,1));
-    }
+//    for(int i=0;i<numDirLights;i++){
+//        color += calcDirLight(dirLights[i], normalTransformed);
+//    }
+//    for(int i=0;i<numPointLights;i++){
+//        color += calcPointLight(pointLights[i], vertexTransformed, vec4(normalTransformed,1));
+//    }
+//    for(int i=0;i<numSpotLights;i++){
+//        color += calcSpotLight(spotLights[i], vertexTransformed, vec4(normalTransformed,1));
+//    }
 
 }

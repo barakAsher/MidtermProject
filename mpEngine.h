@@ -159,6 +159,7 @@ private:
     struct DirectionalLight{
         glm::vec3 direction;
         glm::vec3 color;
+        float intensity;
     };
     struct PointLight{
         glm::vec3 position;
@@ -171,6 +172,10 @@ private:
         glm::vec3 position;
         glm::vec3 direction;
         glm::vec3 color;
+        GLfloat angle;
+        GLfloat linAtten;
+        GLfloat quadAtten;
+        GLfloat expAtten;
     };
 
     std::vector<DirectionalLight> _dirLights;
@@ -182,6 +187,7 @@ private:
     struct DirectionalLightUniformLocations{
         std::vector<GLint> directionLocs;
         std::vector<GLint> colorLocs;
+        std::vector<float> intensityLocs;
 
     } _dirLightUniformLocations;
     struct PointLightUniformLocations{
@@ -191,6 +197,16 @@ private:
         std::vector<GLint> quadAttenLocs;
         std::vector<GLint> expAttenLocs;
     } _pointLightUniformLocations;
+
+    struct SpotLightUniformLocations{
+        std::vector<GLint> positionLocs;
+        std::vector<GLint> colorLocs;
+        std::vector<GLint> dirLocs;
+        std::vector<GLint> angleLocs;
+        std::vector<GLint> linearAttenLocs;
+        std::vector<GLint> quadAttenLocs;
+        std::vector<GLint> expAttenLocs;
+    } _spotLightUniformLocations;
 
     /// \desc stores the locations of all of our shader attributes
     struct LightingShaderAttributeLocations {

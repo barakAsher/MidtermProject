@@ -146,13 +146,24 @@ void mpEngine::mSetupOpenGL() {
 }
 void mpEngine::_setupLights(){
     _lightingShaderUniformLocations.numPointLights = _lightingShaderProgram->getUniformLocation("numPointLights");
+    _lightingShaderUniformLocations.numDirLights = _lightingShaderProgram->getUniformLocation("numDirLights");
     PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
     PointLight secondPoint{{30,2,30},{1,1,1},0,.2f,0};
     _pointLights.emplace_back(firstPoint);
-    _pointLights.emplace_back(secondPoint);
+//    _pointLights.emplace_back(secondPoint);
 
+    DirectionalLight firstDir{{-1,-1,-1},{1,1,1},.5f};
+//    _dirLights.emplace_back(firstDir);
+
+    SpotLight firstSpot{{0,2,0},{0,-1,0},{1,1,1},1.0f, 0,.2f,0};
+//    _spotLights.emplace_back(firstSpot);
+
+    int numDirLights = _dirLights.size();
+    glProgramUniform1iv(_lightingShaderProgram->getShaderProgramHandle(),_lightingShaderUniformLocations.numDirLights,1,&numDirLights);
     int numPointLights = _pointLights.size();
     glProgramUniform1iv(_lightingShaderProgram->getShaderProgramHandle(),_lightingShaderUniformLocations.numPointLights,1,&numPointLights);
+    int numSpotLights = _spotLights.size();
+    glProgramUniform1iv(_lightingShaderProgram->getShaderProgramHandle(),_lightingShaderUniformLocations.numSpotLights,1,&numSpotLights);
 }
 
 void mpEngine::mSetupShaders() {
@@ -182,6 +193,32 @@ void mpEngine::mSetupShaders() {
         _pointLightUniformLocations.quadAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
         test = "pointLights["+std::to_string(i)+"].atten.exp";
         _pointLightUniformLocations.expAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+    }
+
+    for(int i=0;i<_dirLights.size();i++){
+        std::string test = "dirLights["+std::to_string(i)+"].direction";
+        _dirLightUniformLocations.directionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "dirLights["+std::to_string(i)+"].color";
+        _dirLightUniformLocations.colorLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "dirLights["+std::to_string(i)+"].intensity";
+        _dirLightUniformLocations.intensityLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+    }
+
+    for(int i=0;i<_spotLights.size();i++){
+        std::string test = "spotLights["+std::to_string(i)+"].pos";
+        _spotLightUniformLocations.positionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "spotLights["+std::to_string(i)+"].color";
+        _spotLightUniformLocations.colorLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "spotLights["+std::to_string(i)+"].dir";
+        _spotLightUniformLocations.dirLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "spotLights["+std::to_string(i)+"].angle";
+        _spotLightUniformLocations.angleLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "spotLights["+std::to_string(i)+"].atten.lin";
+        _spotLightUniformLocations.linearAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "spotLights["+std::to_string(i)+"].atten.quad";
+        _spotLightUniformLocations.quadAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
+        test = "spotLights["+std::to_string(i)+"].atten.exp";
+        _spotLightUniformLocations.expAttenLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
     }
 
 }
@@ -404,8 +441,6 @@ void mpEngine::mSetupScene() {
 
     _cameraSpeed = glm::vec2(0.25f, 0.02f);
 
-    // set lighting uniforms
-    glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
 
     for(int i=0;i<_pointLights.size();i++) {
         glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.positionLocs[i],1,&_pointLights[i].position[0]);
@@ -413,6 +448,23 @@ void mpEngine::mSetupScene() {
         glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.linearAttenLocs[i],1,&_pointLights[i].linAtten);
         glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.quadAttenLocs[i],1,&_pointLights[i].quadAtten);
         glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.expAttenLocs[i],1,&_pointLights[i].expAtten);
+    }
+
+    for(int i=0;i<_dirLights.size();i++) {
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_dirLightUniformLocations.directionLocs[i],1,&_dirLights[i].direction[0]);
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_dirLightUniformLocations.colorLocs[i],1,&_dirLights[i].color[0]);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_dirLightUniformLocations.intensityLocs[i],1,&_dirLights[i].intensity);
+    }
+
+    for(int i=0;i<_spotLights.size();i++) {
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.positionLocs[i],1,&_spotLights[i].position[0]);
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.dirLocs[i],1,&_spotLights[i].direction[0]);
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.colorLocs[i],1,&_spotLights[i].color[0]);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.angleLocs[i],1,&_spotLights[i].angle);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.linearAttenLocs[i],1,&_spotLights[i].linAtten);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.quadAttenLocs[i],1,&_spotLights[i].quadAtten);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_spotLightUniformLocations.expAttenLocs[i],1,&_spotLights[i].expAtten);
+
     }
 }
 
