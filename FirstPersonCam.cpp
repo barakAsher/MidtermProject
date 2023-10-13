@@ -31,6 +31,11 @@ void FirstPersonCamera::setYaw(float newYaw)
     updateCameraVectors();
 }
 
+void FirstPersonCamera::updateYawFromPlayer(float playerYaw) {
+    yaw = playerYaw;
+    updateCameraVectors();
+}
+
 float FirstPersonCamera::getYaw() const
 {
     return yaw;
