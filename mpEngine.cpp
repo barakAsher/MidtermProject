@@ -147,16 +147,17 @@ void mpEngine::mSetupOpenGL() {
 void mpEngine::_setupLights(){
     _lightingShaderUniformLocations.numPointLights = _lightingShaderProgram->getUniformLocation("numPointLights");
     _lightingShaderUniformLocations.numDirLights = _lightingShaderProgram->getUniformLocation("numDirLights");
+    _lightingShaderUniformLocations.numSpotLights = _lightingShaderProgram->getUniformLocation("numSpotLights");
     PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
     PointLight secondPoint{{30,2,30},{1,1,1},0,.2f,0};
-    _pointLights.emplace_back(firstPoint);
-//    _pointLights.emplace_back(secondPoint);
+//    _pointLights.emplace_back(firstPoint);
+    _pointLights.emplace_back(secondPoint);
 
-    DirectionalLight firstDir{{-1,-1,-1},{1,1,1},.5f};
-//    _dirLights.emplace_back(firstDir);
+    DirectionalLight firstDir{{-1,-1,-1},{1,1,1},.25};
+    _dirLights.emplace_back(firstDir);
 
-    SpotLight firstSpot{{0,2,0},{0,-1,0},{1,1,1},1.0f, 0,.2f,0};
-//    _spotLights.emplace_back(firstSpot);
+    SpotLight firstSpot{{0,10,0},{0,-1,0},{1,0,0},1, 0,.2,0};
+    _spotLights.emplace_back(firstSpot);
 
     int numDirLights = _dirLights.size();
     glProgramUniform1iv(_lightingShaderProgram->getShaderProgramHandle(),_lightingShaderUniformLocations.numDirLights,1,&numDirLights);

@@ -72,10 +72,15 @@ vec3 calcDirLight(DirectionalLight dirLight, vec3 vNormTrans){
 }
 
 vec3 calcSpotLight(SpotLight spotLight, vec4 vPosTrans, vec4 vNormTrans){
-    vec4 lightDirection = vec4(spotLight.pos,1)-vPosTrans; //get the light direction to point light
+    vec4 lightDirection = -(vec4(spotLight.pos,1)-vPosTrans); //get the light direction to point light
     float distance = length(lightDirection);
     lightDirection = normalize(lightDirection);
-    if (acos(dot(lightDirection,vec4(spotLight.dir,1))) > spotLight.angle){
+    float checkDot = (dot(lightDirection,vec4(spotLight.dir,1)));
+    if(checkDot < 0){
+        return vec3(0,0,0);
+    }
+    float checkAngle = acos(checkDot);
+    if (checkAngle > spotLight.angle){
         return vec3(0,0,0);
     }
 
@@ -100,14 +105,14 @@ void main() {
     vec3 normalTransformed = normalMatrix * vNormal;
     vec4 vertexTransformed = modelMtx*vec4(vPos,1);
     color = vec3(0,0,0);
-//    for(int i=0;i<numDirLights;i++){
-//        color += calcDirLight(dirLights[i], normalTransformed);
-//    }
-//    for(int i=0;i<numPointLights;i++){
-//        color += calcPointLight(pointLights[i], vertexTransformed, vec4(normalTransformed,1));
-//    }
-//    for(int i=0;i<numSpotLights;i++){
-//        color += calcSpotLight(spotLights[i], vertexTransformed, vec4(normalTransformed,1));
-//    }
+    for(int i=0;i<numDirLights;i++){
+        color += calcDirLight(dirLights[i], normalTransformed);
+    }
+    for(int i=0;i<numPointLights;i++){
+        color += calcPointLight(pointLights[i], vertexTransformed, vec4(normalTransformed,1));
+    }
+    for(int i=0;i<numSpotLights;i++){
+        color += calcSpotLight(spotLights[i], vertexTransformed, vec4(normalTransformed,1));
+    }
 
 }
