@@ -144,6 +144,16 @@ void mpEngine::mSetupOpenGL() {
 
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );	        // clear the frame buffer to black
 }
+void mpEngine::_setupLights(){
+    _lightingShaderUniformLocations.numPointLights = _lightingShaderProgram->getUniformLocation("numPointLights");
+    PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
+    PointLight secondPoint{{30,2,30},{1,1,1},0,.2f,0};
+    _pointLights.emplace_back(firstPoint);
+    _pointLights.emplace_back(secondPoint);
+
+    int numPointLights = _pointLights.size();
+    glProgramUniform1iv(_lightingShaderProgram->getShaderProgramHandle(),_lightingShaderUniformLocations.numPointLights,1,&numPointLights);
+}
 
 void mpEngine::mSetupShaders() {
     _lightingShaderProgram = new CSCI441::ShaderProgram("shaders/mp.v.glsl", "shaders/mp.f.glsl" );
@@ -159,8 +169,9 @@ void mpEngine::mSetupShaders() {
     _lightingShaderAttributeLocations.vPos         = _lightingShaderProgram->getAttributeLocation("vPos");
     _lightingShaderAttributeLocations.vNormal      = _lightingShaderProgram->getAttributeLocation(("vNormal"));
 
+    _setupLights();
     //need to set pointlight size here
-    for(int i=0;i<1;i++){
+    for(int i=0;i<_pointLights.size();i++){
         std::string test = "pointLights["+std::to_string(i)+"].pos";
         _pointLightUniformLocations.positionLocs.emplace_back(_lightingShaderProgram->getUniformLocation(test.c_str()));
         test = "pointLights["+std::to_string(i)+"].color";
@@ -176,9 +187,6 @@ void mpEngine::mSetupShaders() {
 }
 
 void mpEngine::mSetupBuffers() {
-
-
-
     //  connect our 3D Object Library to our shader
     CSCI441::setVertexAttributeLocations( _lightingShaderAttributeLocations.vPos,_lightingShaderAttributeLocations.vNormal);
 
@@ -399,41 +407,12 @@ void mpEngine::mSetupScene() {
     // set lighting uniforms
     glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
 
-    PointLight firstPoint{{0,2,0},{1,1,1},0,.2f,0};
-    _pointLights.emplace_back(firstPoint);
-
     for(int i=0;i<_pointLights.size();i++) {
-
-        glProgramUniform3fv(
-                _lightingShaderProgram->getShaderProgramHandle(),
-                _pointLightUniformLocations.positionLocs[i],
-                1,
-                &_pointLights[i].position[0]
-        );
-        glProgramUniform3fv(
-                _lightingShaderProgram->getShaderProgramHandle(),
-                _pointLightUniformLocations.colorLocs[i],
-                1,
-                &_pointLights[i].color[0]
-        );
-        glProgramUniform1fv(
-                _lightingShaderProgram->getShaderProgramHandle(),
-                _pointLightUniformLocations.linearAttenLocs[i],
-                1,
-                &_pointLights[i].linAtten
-        );
-        glProgramUniform1fv(
-                _lightingShaderProgram->getShaderProgramHandle(),
-                _pointLightUniformLocations.quadAttenLocs[i],
-                1,
-                &_pointLights[i].quadAtten
-        );
-        glProgramUniform1fv(
-                _lightingShaderProgram->getShaderProgramHandle(),
-                _pointLightUniformLocations.expAttenLocs[i],
-                1,
-                &_pointLights[i].expAtten
-        );
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.positionLocs[i],1,&_pointLights[i].position[0]);
+        glProgramUniform3fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.colorLocs[i],1,&_pointLights[i].color[0]);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.linearAttenLocs[i],1,&_pointLights[i].linAtten);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.quadAttenLocs[i],1,&_pointLights[i].quadAtten);
+        glProgramUniform1fv(_lightingShaderProgram->getShaderProgramHandle(),_pointLightUniformLocations.expAttenLocs[i],1,&_pointLights[i].expAtten);
     }
 }
 

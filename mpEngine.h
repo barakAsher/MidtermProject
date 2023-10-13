@@ -146,6 +146,9 @@ private:
         /// \desc precomputed MVP matrix location
         GLint mvpMatrix;
         GLint modelMtx;
+        GLint numDirLights;
+        GLint numPointLights;
+        GLint numSpotLights;
         /// \desc material diffuse color location
         GLint materialColor;
         GLint normalMatrix;
@@ -173,6 +176,8 @@ private:
     std::vector<DirectionalLight> _dirLights;
     std::vector<PointLight> _pointLights;
     std::vector<SpotLight> _spotLights;
+
+    void _setupLights();
 
     struct DirectionalLightUniformLocations{
         std::vector<GLint> directionLocs;
