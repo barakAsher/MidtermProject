@@ -1,46 +1,60 @@
 //
-// Created by Porter Fredrickson on 10/12/23.
+// Created by forag on 10/13/2023.
 //
 
-#ifndef FIRST_PERSON_CAMERA_H
-#define FIRST_PERSON_CAMERA_H
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-class FirstPersonCamera {
-private:
-    glm::vec3 position;  // Camera position
-    glm::vec3 front;     // Camera front direction
-    glm::vec3 up;        // Camera up direction
-    glm::vec3 right;     // Camera right direction
-    glm::vec3 worldUp;   // World up direction
+#ifndef MP_FIRSTPERSONCAM_H
+#define MP_FIRSTPERSONCAM_H
 
 
-    float yaw; // Yaw angle
-    float pitch;         // Pitch angle
+#include <CSCI441/Camera.hpp>
 
-    glm::mat4 projectionMatrix;  // Add this line to hold the projection matrix
-
-    // update camera when it's rotated with A nd D keys
-    void updateCameraVectors();
-
+/**
+ * @brief A camera that implements a ArcballCam camera model.
+ */
+class FirstPersonCam final : public CSCI441::Camera {
 public:
-//    FirstPersonCamera(glm::vec3 position, glm::vec3 up, float yaw, float pitch);
-    FirstPersonCamera(glm::vec3 position);
-    // Get the view matrix
-    glm::mat4 getViewMatrix();
+    /**
+     * creates a ArcballCam object with the specified perspective projection
+     * @param aspectRatio aspect ratio of view plane (defaults to 1.0f)
+     * @param fovy vertical field of view (defaults to 45.0f)
+     * @param nearClipPlane near z clip plane (defaults to 0.001f)
+     * @param farClipPlane far z clip plane (defaults to 1000.0f)
+     * @note field of view specified in degrees
+     */
+    explicit FirstPersonCam(GLfloat aspectRatio = 1.0f, GLfloat fovy = 45.0f, GLfloat nearClipPlane = 1.0f, GLfloat farClipPlane = 100.0f);
 
-    glm::mat4 getProjectionMatrix() const;
+    /**
+     * @brief converts spherical theta & phi to cartesian x,y,z direction vector
+     * @note sets the camera's direction vector to point outward from a sphere centered
+     * at the camera's position and updates the camera's look at point to be a point on
+     * the sphere offset from the camera's position.
+     * @note internally sets the camera's view matrix
+     */
+    void recomputeOrientation() final;
 
-    void setPosition(glm::vec3 newPosition);
+    /**
+     * @brief updates the camera's position by the adding the camera's direction to the camera's position
+     * @param movementFactor  distance factor to scale the movement step
+     * @note internally sets the camera's view matrix
+     */
+    void moveForward(GLfloat movementFactor) final;
+
+    /**
+     * @brief updates the camera's position by the adding the camera's negative direction to the camera's position
+     * @param movementFactor distance factor to scale the movement step
+     * @note internally sets the camera's view matrix
+     */
+    void moveBackward(GLfloat movementFactor) final;
 
 
-    void setYaw(float newYaw);
+private:
+    // updates the look at point and recalculates the view matrix
+    void _updateFreeCam2CameraViewMatrix();
 
-    float getYaw() const;
+    GLfloat _fovy;
+    GLfloat _aspectRatio;
+    GLfloat _nearClipPlane;
+    GLfloat _farClipPlane;
 
-    void updateYawFromPlayer(float playerYaw);
 };
-
-#endif // FIRST_PERSON_CAMERA_H
+#endif //MP_FIRSTPERSONCAM_H

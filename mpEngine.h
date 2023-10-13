@@ -16,6 +16,7 @@
 #include "characters/Starlord.h"
 #include "characters/Gengiben.h"
 #include "FirstPersonCam.h"
+#include "FirstPersonCam.h"
 
 class mpEngine final : public CSCI441::OpenGLEngine {
 public:
@@ -83,7 +84,7 @@ private:
     /// \desc the arcball camera in our world
     ArcballCam* pArcballCam;
     CSCI441::FreeCam* pFreeCam;
-    FirstPersonCamera* fpCam;
+    FirstPersonCam* fpCam;
 
 
     int _currentCam;

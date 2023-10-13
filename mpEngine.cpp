@@ -37,6 +37,7 @@ mpEngine::mpEngine()
 
 mpEngine::~mpEngine() {
     delete pArcballCam;
+    delete fpCam;
     delete pFreeCam;
 }
 
@@ -423,7 +424,11 @@ void mpEngine::mSetupScene() {
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
     pArcballCam->recomputeOrientation();
 
-    fpCam = new FirstPersonCamera(pArcballCam->getLookAtPoint());
+    fpCam = new FirstPersonCam();
+    fpCam->setPosition(_currentPlayer->getPosition() );
+    fpCam->setTheta(_currentPlayer->getAngle());
+    fpCam->setPhi(M_PI/2.0f);
+    fpCam->recomputeOrientation();
 
     pFreeCam = new CSCI441::FreeCam();
     pFreeCam->setPosition(glm::vec3(30.0f, 20.0f, 15.0f) );
@@ -503,6 +508,7 @@ void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     float yOffset = 0.2f; // moves the fp_cam a little above the center of the player
     glm::vec3 offset(0.0f, yOffset, 0.0f);
     fpCam->setPosition(_currentPlayer->getPosition() + offset);
+    fpCam -> recomputeOrientation();
 
     pArcballCam->recomputeOrientation();
 
@@ -588,10 +594,6 @@ void mpEngine::_updateScene() {
         currAngle -= _cameraSpeed.y;
         _currentPlayer->setAngle(currAngle);
 
-        //update the FPCams angle
-//        fpCam->setYaw(_currentPlayer->getAngle());
-        fpCam->setYaw(fpCam->getYaw() + 1.13);
-
         pArcballCam->rotate(_cameraSpeed.y, 0.0f);
         pArcballCam->recomputeOrientation();
 //        pOverheadCam->rotate(_cameraSpeed.y, 0.0f);
@@ -604,10 +606,6 @@ void mpEngine::_updateScene() {
         GLfloat currAngle = _currentPlayer->getAngle();
         currAngle += _cameraSpeed.y;
         _currentPlayer->setAngle(currAngle);
-
-        //Update the FP cams angle
-        //fpCam->setYaw(_currentPlayer->getAngle());
-        fpCam->setYaw(fpCam->getYaw() - 1.13);
 
         //update the arcballs angle
         pArcballCam->rotate(-_cameraSpeed.y, 0.0f);
@@ -678,28 +676,36 @@ void mpEngine::_updateScene() {
 
 
     //Code to rotate the look direction of the FP cam
-//    if (_currentCam == 1) {
-//        // Update yaw based on 'A' and 'D' keys
-//        if ( (_keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT]) && (!_keys[GLFW_KEY_D] || !_keys[GLFW_KEY_RIGHT])) {
-//            GLfloat currAngle = _currentPlayer->getAngle();
-//            currAngle += _cameraSpeed.x;
-//            // Turn left by decreasing yaw
-//            //TODO: fix the hard encoding of the FP yaw adjustment
-//            fpCam->setYaw(fpCam->getYaw() - 1.13);
-//            //fpCam->setYaw(currAngle);
-//        } else if ((_keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT]) && (!_keys[GLFW_KEY_A] || !_keys[GLFW_KEY_LEFT])) {
-//            // Turn right by increasing yaw
-//            //TODO: fix the hard encoding of the FP yaw adjustment
-//            fpCam->setYaw(fpCam->getYaw() + 1.13);
-//            //fpCam->setYaw(_currentPlayer->getAngle());
-//        }
+    if (_currentCam == 1) {
+        // Update yaw based on 'A' and 'D' keys
+        if ((_keys[GLFW_KEY_A] || _keys[GLFW_KEY_LEFT]) && (!_keys[GLFW_KEY_D] || !_keys[GLFW_KEY_RIGHT])) {
+            GLfloat currAngle = _currentPlayer->getAngle();
+//            printf("currAngle %f \n",currAngle);
+//            currAngle += _cameraSpeed.y;
+            // Turn left by decreasing yaw
+            //TODO: fix the hard encoding of the FP yaw adjustment
+//            fpCam -> setPosition(_currentPlayer->getPosition());
+            fpCam->setTheta(-currAngle);
+            fpCam->recomputeOrientation();
+            //fpCam->setYaw(currAngle);
+        } else if ((_keys[GLFW_KEY_D] || _keys[GLFW_KEY_RIGHT]) && (!_keys[GLFW_KEY_A] || !_keys[GLFW_KEY_LEFT])) {
+            GLfloat currAngle = _currentPlayer->getAngle();
+//            printf("currAngle %f \n",currAngle);
+//            currAngle -= _cameraSpeed.y;
+            // Turn right by increasing yaw
+            //TODO: fix the hard encoding of the FP yaw adjustment
+//            fpCam -> setPosition(_currentPlayer->getPosition());
+            fpCam->setTheta(-currAngle);
+            fpCam->recomputeOrientation();
+            //fpCam->setYaw(_currentPlayer->getAngle());
+        }
 
         // Rest of your code...
 
         // Update view matrix based on the camera's new orientation
         //viewMatrix = fpCam->getViewMatrix();
-    //}
-
+        //}
+    }
 
 }
 

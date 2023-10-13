@@ -45,6 +45,7 @@ Starlord::Starlord(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint
     _translateEyeRight = glm::vec3(-0.25f,3.8f,0.6f);
 
 
+
 }
 
 

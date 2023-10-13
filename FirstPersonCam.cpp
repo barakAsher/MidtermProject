@@ -1,60 +1,59 @@
 //
-// Created by Porter Fedrickson on 10/12/23.
+// Created by forag on 10/13/2023.
 //
 
 #include "FirstPersonCam.h"
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 initialPosition)
-        : position(initialPosition), worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), yaw(-90.0f), pitch(0.0f)
+FirstPersonCam::FirstPersonCam(
+        const GLfloat aspectRatio,
+        const GLfloat fovy,
+        const GLfloat nearClipPlane,
+        const GLfloat farClipPlane
+) : _fovy(fovy),
+    _aspectRatio(aspectRatio),
+    _nearClipPlane(nearClipPlane),
+    _farClipPlane(farClipPlane)
 {
-    updateCameraVectors();
-    position = initialPosition;
-    float fov = 45.0f;       // Field of View
-    float aspectRatio = 16.0f / 9.0f;  // Adjust as needed
-    float nearPlane = 0.1f;  // Near clipping plane
-    float farPlane = 100.0f; // Far clipping plane
-
-    projectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, nearPlane, farPlane);
+    mProjectionMatrix = glm::perspective(_fovy, _aspectRatio, _nearClipPlane, _farClipPlane);
 }
 
-glm::mat4 FirstPersonCamera::getProjectionMatrix() const {
-    return projectionMatrix;
+//inline void FirstPersonCam::recomputeOrientation() {
+//    // compute position vector based on spherical to cartesian conversion
+//    mCameraDirection.x =  glm::sin(glm::radians(mCameraTheta) ) * glm::sin(glm::radians(mCameraPhi) );
+//    mCameraDirection.y = -glm::cos(glm::radians(mCameraPhi) );
+//    mCameraDirection.z = -glm::cos(glm::radians(mCameraTheta) ) * glm::sin(glm::radians(mCameraPhi) );
+//
+//    // and normalize this directional vector!
+//    mCameraDirection = glm::normalize(mCameraDirection );
+//
+//    _updateFreeCam2CameraViewMatrix();
+//}
+
+inline void FirstPersonCam::recomputeOrientation() {
+    // compute direction vector based on spherical to cartesian conversion
+    mCameraDirection.x =  glm::sin(mCameraTheta ) * glm::sin(mCameraPhi );
+    mCameraDirection.y = -glm::cos(mCameraPhi );
+    mCameraDirection.z = -glm::cos(mCameraTheta ) * glm::sin(mCameraPhi );
+
+    // and normalize this directional vector!
+    mCameraDirection = glm::normalize(mCameraDirection );
+
+    _updateFreeCam2CameraViewMatrix();
 }
 
-void FirstPersonCamera::setPosition(glm::vec3 newPosition) {
-    position = newPosition;
+inline void FirstPersonCam::moveForward(const GLfloat movementFactor) {
+    mCameraPosition += movementFactor; //TODO prob dont want to do this
+    mCameraLookAtPoint += movementFactor;
+    _updateFreeCam2CameraViewMatrix();
 }
 
-void FirstPersonCamera::setYaw(float newYaw)
-{
-    yaw = newYaw;
-    updateCameraVectors();
+inline void FirstPersonCam::moveBackward(const GLfloat movementFactor) {
+    mCameraPosition -= movementFactor;
+    mCameraLookAtPoint -= movementFactor;
+    _updateFreeCam2CameraViewMatrix();
 }
 
-void FirstPersonCamera::updateYawFromPlayer(float playerYaw) {
-    yaw = playerYaw;
-    updateCameraVectors();
-}
-
-float FirstPersonCamera::getYaw() const
-{
-    return yaw;
-}
-
-void FirstPersonCamera::updateCameraVectors()
-{
-    glm::vec3 newFront;
-    newFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    newFront.y = sin(glm::radians(pitch));
-    newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front = glm::normalize(newFront);
-
-    // Recalculate right and up vectors
-    right = glm::normalize(glm::cross(front, worldUp));
-    up = glm::normalize(glm::cross(right, front));
-}
-
-glm::mat4 FirstPersonCamera::getViewMatrix()
-{
-    return glm::lookAt(position, position + front, up);
+inline void FirstPersonCam::_updateFreeCam2CameraViewMatrix() {
+    setLookAtPoint(mCameraPosition + mCameraDirection );
+    computeViewMatrix();
 }

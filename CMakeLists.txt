@@ -9,9 +9,7 @@ set(SOURCE_FILES main.cpp mpEngine.cpp mpEngine.h characters/Skiff.cpp character
         characters/Starlord.cpp
         characters/Gengiben.h
         characters/Gengiben.cpp
-        FirstPersonCam.cpp
-        FirstPersonCam.h
-)
+        FirstPersonCam.cpp FirstPersonCam.h)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # Windows with MinGW Installations
