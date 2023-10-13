@@ -41,23 +41,21 @@ Vehicle::Vehicle(GLuint shaderProgramHandle, GLint mvpMtxUniformLocation,GLint m
 }
 
 void Vehicle::drawPlayer(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) {
-
     //Ensure that the the plane is drawn correctly after it has been rotated
     modelMtx = glm::translate(modelMtx, getPosition());
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), getAngle()-glm::pi<float>()/2, CSCI441::Y_AXIS);
     modelMtx = modelMtx * rotationMatrix;
 
-
-    _drawPlaneBody(modelMtx, viewMtx, projMtx);        // the body of our plane
-    _drawPlaneWing(true, modelMtx, viewMtx, projMtx);  // the left wing
-    _drawPlaneWing(false, modelMtx, viewMtx, projMtx); // the right wing
-    _drawPlaneNose(modelMtx, viewMtx, projMtx);        // the nose
-    _drawPlanePropeller(modelMtx, viewMtx, projMtx);   // the propeller
-    _drawPlaneTail(modelMtx, viewMtx, projMtx);        // the tail
+    _drawVehicleBody(modelMtx, viewMtx, projMtx);        // body
+    _drawVehicleWing(true, modelMtx, viewMtx, projMtx);  // the left wing
+    _drawVehicleWing(false, modelMtx, viewMtx, projMtx); // the right wing
+    _drawVehicleNose(modelMtx, viewMtx, projMtx);        // the nose
+    _drawVehiclePropeller(modelMtx, viewMtx, projMtx);   // the propeller
+    _drawVehicleTail(modelMtx, viewMtx, projMtx);        // the tail
 }
 
 
-void Vehicle::_drawPlaneBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
+void Vehicle::_drawVehicleBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx) const {
 
     modelMtx = glm::scale( modelMtx, _scaleBody );
 
@@ -65,11 +63,10 @@ void Vehicle::_drawPlaneBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 pr
 
     glProgramUniform3fv(_shaderProgramHandle, _shaderProgramUniformLocations.materialColor, 1, &_colorBody[0]);
 
-    //CSCI441::drawSolidCube( 0.1f );
     CSCI441::drawSolidSphere(0.18, 50, 3);
 }
 
-void Vehicle::_drawPlaneWing(bool isLeftWing, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
+void Vehicle::_drawVehicleWing(bool isLeftWing, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
     modelMtx = glm::scale( modelMtx, _scaleWing );
     modelMtx = glm::rotate( modelMtx, (isLeftWing ? -1.f : 1.f) * _rotateWingAngle, CSCI441::X_AXIS );
 
@@ -77,12 +74,10 @@ void Vehicle::_drawPlaneWing(bool isLeftWing, glm::mat4 modelMtx, glm::mat4 view
 
     glProgramUniform3fv(_shaderProgramHandle, _shaderProgramUniformLocations.materialColor, 1, &_colorWing[0]);
 
-    //CSCI441::drawSolidCone( 0.05f, 0.2f, 16, 16 );
     CSCI441::drawSolidSphere(0.2, 50, 3);
 }
 
-void Vehicle::_drawPlaneNose(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
-    //modelMtx = glm::scale( modelMtx, _scaleBody );
+void Vehicle::_drawVehicleNose(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
     modelMtx = glm::rotate( modelMtx, _rotateNoseAngle, CSCI441::Z_AXIS );
 
     _computeAndSendMatrixUniforms(modelMtx, viewMtx, projMtx);
@@ -90,10 +85,11 @@ void Vehicle::_drawPlaneNose(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 pr
     glProgramUniform3fv(_shaderProgramHandle, _shaderProgramUniformLocations.materialColor, 1, &_colorNose[0]);
 
     CSCI441::drawSolidCone( 0.025f, 0.3f, 16, 16 );
-    //CSCI441::drawSolidSphere(0.2, 50, 3);
 }
 
-void Vehicle::_drawPlanePropeller(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
+void Vehicle::_drawVehiclePropeller(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) {
+    _propAngle -= _propAngleRotationSpeed;
+    if( _propAngle < 0.0f ) _propAngle += _2PI;
     glm::mat4 modelMtx1 = glm::translate( modelMtx, _transProp );
     modelMtx1 = glm::rotate( modelMtx1, _propAngle, CSCI441::X_AXIS );
     modelMtx1 = glm::scale( modelMtx1, _scaleProp );
@@ -113,7 +109,7 @@ void Vehicle::_drawPlanePropeller(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::ma
     CSCI441::drawSolidCube( 0.1f );
 }
 
-void Vehicle::_drawPlaneTail(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
+void Vehicle::_drawVehicleTail(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const {
     _computeAndSendMatrixUniforms(modelMtx, viewMtx, projMtx);
 
     glProgramUniform3fv(_shaderProgramHandle, _shaderProgramUniformLocations.materialColor, 1, &_colorTail[0]);
