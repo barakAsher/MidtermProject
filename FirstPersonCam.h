@@ -20,7 +20,7 @@ private:
     float pitch;         // Pitch angle
 
     glm::mat4 projectionMatrix;  // Add this line to hold the projection matrix
-
+    //glm::vec3 position;
 
     float movementSpeed;
     float mouseSensitivity;
@@ -46,6 +46,8 @@ public:
     glm::vec3 getFront() const;
 
     glm::mat4 getProjectionMatrix() const;
+
+    void setPosition(glm::vec3 newPosition);
 };
 
 #endif // FIRST_PERSON_CAMERA_H

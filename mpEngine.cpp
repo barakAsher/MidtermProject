@@ -478,6 +478,15 @@ void mpEngine::mCleanupBuffers() {
 
 void mpEngine::_renderScene(glm::mat4 viewMtx, glm::mat4 projMtx) const {
     pArcballCam->setLookAtPoint(_currentPlayer->getPosition());
+
+    // Get the player's look-at point (assuming getLookAtPoint() returns the look-at point)
+    glm::vec3 lookAtPoint = _currentPlayer->getPosition();
+
+    float zOffset = -1.0f; // moves the fp_cam out of the center of the player
+    glm::vec3 offset(0.0f, 0.0f, zOffset);
+    fpCam->setPosition(_currentPlayer->getPosition() + offset);
+
+
     pArcballCam->recomputeOrientation();
 
     // use our lighting shader program
@@ -665,11 +674,6 @@ void mpEngine::run() {
         else if(_currentCam == 2){
             _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
         }
-
-        // overhead camera window
-//        glClear(GL_DEPTH_BUFFER_BIT);
-//        glViewport(framebufferWidth - 400, framebufferHeight - 400, 400, 400);
-//        _renderScene(pFreeCam->getViewMatrix(), pFreeCam->getProjectionMatrix());
 
         _updateScene();
 

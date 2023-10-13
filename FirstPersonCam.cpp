@@ -19,7 +19,7 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 initialPosition)
         : position(initialPosition), worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), yaw(-90.0f), pitch(0.0f)
 {
     updateCameraVectors();
-
+    position = initialPosition;
     float fov = 45.0f;       // Field of View
     float aspectRatio = 16.0f / 9.0f;  // Adjust as needed
     float nearPlane = 0.1f;  // Near clipping plane
@@ -30,6 +30,10 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 initialPosition)
 
 glm::mat4 FirstPersonCamera::getProjectionMatrix() const {
     return projectionMatrix;
+}
+
+void FirstPersonCamera::setPosition(glm::vec3 newPosition) {
+    position = newPosition;
 }
 
 
@@ -105,6 +109,7 @@ glm::vec3 FirstPersonCamera::getPosition() const
 {
     return position;
 }
+
 
 glm::vec3 FirstPersonCamera::getFront() const
 {
