@@ -6,18 +6,16 @@
 #include <CSCI441/OpenGLEngine.hpp>
 #include <CSCI441/ShaderProgram.hpp>
 
-#include "Skiff.h"
 #include "ArcballCam.hpp"
 #include "CSCI441/FreeCam.hpp"
 #include "CSCI441/FixedCam.hpp"
-#include "Vehicle.h"
+
 #include "Player.h"
-#include "Starlord.h"
-#include "Gengiben.h"
+#include "characters/Skiff.h"
+#include "characters/Vehicle.h"
+#include "characters/Starlord.h"
+#include "characters/Gengiben.h"
 #include "FirstPersonCam.h"
-
-
-#include <vector>
 
 class mpEngine final : public CSCI441::OpenGLEngine {
 public:

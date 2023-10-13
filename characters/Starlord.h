@@ -9,7 +9,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include "Player.h"
+#include "../Player.h"
 
 
 class Starlord : public Player {

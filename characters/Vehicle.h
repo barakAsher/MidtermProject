@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include "Player.h"
+#include "../Player.h"
 
 //class Vehicle {
 class Vehicle : public Player {
@@ -72,29 +72,29 @@ private:
     /// \param modelMtx existing model matrix to apply to plane
     /// \param viewMtx camera view matrix to apply to plane
     /// \param projMtx camera projection matrix to apply to plane
-    void _drawPlaneBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
-    //void _drawPlaneBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx, GLfloat movementFactor) const;
+    void _drawVehicleBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
+    //void _drawVehicleBody(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx, GLfloat movementFactor) const;
     /// \desc draws a single wing
     /// \param isLeftWing true if left wing, false if right wing (controls wing rotation)
     /// \param modelMtx existing model matrix to apply to plane
     /// \param viewMtx camera view matrix to apply to plane
     /// \param projMtx camera projection matrix to apply to plane
-    void _drawPlaneWing(bool isLeftWing, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
+    void _drawVehicleWing(bool isLeftWing, glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
     /// \desc draws the nose of the plane
     /// \param modelMtx existing model matrix to apply to plane
     /// \param viewMtx camera view matrix to apply to plane
     /// \param projMtx camera projection matrix to apply to plane
-    void _drawPlaneNose(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
+    void _drawVehicleNose(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
     /// \desc draws the two propeller pieces
     /// \param modelMtx existing model matrix to apply to plane
     /// \param viewMtx camera view matrix to apply to plane
     /// \param projMtx camera projection matrix to apply to plane
-    void _drawPlanePropeller(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
+    void _drawVehiclePropeller(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx );
     /// \desc draws the tail of the plane
     /// \param modelMtx existing model matrix to apply to plane
     /// \param viewMtx camera view matrix to apply to plane
     /// \param projMtx camera projection matrix to apply to plane
-    void _drawPlaneTail(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
+    void _drawVehicleTail(glm::mat4 modelMtx, glm::mat4 viewMtx, glm::mat4 projMtx ) const;
 
 
 };
