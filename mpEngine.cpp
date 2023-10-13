@@ -57,6 +57,7 @@ void mpEngine::handleKeyEvent(GLint key, GLint action) {
                 if (_currentPlayerIdx > _players.size() - 1)
                     _currentPlayerIdx = 0;
                 pArcballCam->setTheta(glm::pi<float>() - _players[_currentPlayerIdx]->getAngle());
+                fpCam->setTheta( _players[_currentPlayerIdx]->getAngle());
                 break;
             case GLFW_KEY_1:    //arcball cam
                 _currentCam=1;
