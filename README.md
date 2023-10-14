@@ -29,6 +29,7 @@ Free Camera selection: Press 2
     Press the space bar to move Camera forward 
     Press Shift + Space to move the camera backward
     Use the mouse + left click to drag and change the free cams heading
+    JKLI also work to change camera heading
 
 If in ArcBall view, press 3 to make first person viewport camera appear in the top right.
 
